@@ -1,5 +1,5 @@
-require "akamai_ccu/version"
+$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 
-module AkamaiCcu
-  # Your code goes here...
-end
+require "akamai_ccu/version"
+require "akamai_ccu/client"
+

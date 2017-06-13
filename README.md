@@ -5,8 +5,8 @@
 * [Usage](#usage)
 
 ## Scope
-This gem is a minimal wrapper of the [Akamai CCU APIs](https://api.ccu.akamai.com/ccu/v2/docs/) used to purge Edge content by request.  
-The library is compliant with V.2.0 and updated to the main purging methods available.
+This gem is a minimal wrapper of the [Akamai CCU](https://api.ccu.akamai.com/ccu/v2/docs/) APIs used to purge Edge content by request.  
+The library is compliant with V.2.0 REST APIs and does not include the SOAP-based obsolete ones.
 
 ## Installation
 
