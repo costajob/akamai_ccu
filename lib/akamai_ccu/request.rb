@@ -20,7 +20,7 @@ module AkamaiCCU
       @url = URI(path)
     end
 
-    def decorate
+    def decorate!
       @raw.tap do |request|
         request[HEADER_KEY] = signed_headers
       end
@@ -45,7 +45,7 @@ module AkamaiCCU
     end
 
     private def signature_data
-      [].tap do |data|
+      @signature_data ||= [].tap do |data|
         data << method
         data << @url.scheme
         data << @raw.fetch("host") { @url.host }

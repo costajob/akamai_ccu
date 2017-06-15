@@ -45,7 +45,7 @@ module AkamaiCCU
     end
 
     def auth_header
-      DIGEST.tap do |header|
+      @auth_header ||= DIGEST.tap do |header|
         header << " "
         header << "client_token=#{@client_token};"
         header << "access_token=#{@access_token};"
