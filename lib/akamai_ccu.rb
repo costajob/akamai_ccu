@@ -10,16 +10,16 @@ require "akamai_ccu/request"
 module AkamaiCCU
   extend self
 
-  def format_utc(t = Time.now)
-    t.utc.strftime("%Y%m%dT%H:%M:%S+0000")
+  def format_utc(time)
+    time.utc.strftime("%Y%m%dT%H:%M:%S+0000")
   end
 
-  def sign(data = AkamaiCCU.format_utc)
+  def sign(data)
     digest = OpenSSL::Digest::SHA256.new.digest(data)
     Base64.encode64(digest).strip
   end
 
-  def sign_HMAC(key:, data: AkamaiCCU.format_utc)
+  def sign_HMAC(key:, data:)
     digest = OpenSSL::HMAC.digest(OpenSSL::Digest::SHA256.new, key, data)
     Base64.encode64(digest).strip
   end

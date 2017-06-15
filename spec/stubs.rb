@@ -1,7 +1,8 @@
 module Stubs
   extend self
 
-  Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key)
+  Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header)
+
   Raw = Struct.new(:keys, :body, :body_permitted, :method, :path) do
     def request_body_permitted?
       body_permitted
@@ -14,6 +15,14 @@ module Stubs
     def [](name)
       keys[name]
     end
+
+    def []=(name, val)
+      keys[name] = val
+    end
+
+    def fetch(name, &b)
+      keys.fetch(name, &b)
+    end
   end
 
   def headers
@@ -25,6 +34,6 @@ module Stubs
   end
 
   def secret
-    Secret.new("xxx=", "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", "akab-access-token-xxx-xxx", "akab-client-token-xxx-xxx", 2048, "tbZ+hvr+iv4cmC1+bi8sHCjPw6gqWmsfFYHa+Et1Wro=")
+    Secret.new("xxx=", "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", "akab-access-token-xxx-xxx", "akab-client-token-xxx-xxx", 2048, "tbZ+hvr+iv4cmC1+bi8sHCjPw6gqWmsfFYHa+Et1Wro=", "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;")
   end
 end
