@@ -13,6 +13,7 @@ module AkamaiCCU
   GET = :Get
   POST = :Post
   JSON_CONTENT = { "Content-Type" => "application/json" }
+  SSL_PORT = 443
 
   def format_utc(time)
     time.utc.strftime("%Y%m%dT%H:%M:%S+0000")

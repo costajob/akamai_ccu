@@ -7,8 +7,6 @@ module AkamaiCCU
   class Client
     extend Forwardable
 
-    SSL_PORT = 443
-
     def_delegators :@secret, :host
     
     attr_reader :net_klass

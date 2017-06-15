@@ -14,6 +14,8 @@ module AkamaiCCU
     def_delegators :@raw, :body, :request_body_permitted?, :path, :method
     def_delegators :@secret, :max_body, :auth_header, :signed_key
 
+    attr_reader :raw
+
     def initialize(raw:, secret:, headers: [])
       @raw = raw
       @secret = secret
@@ -22,9 +24,7 @@ module AkamaiCCU
     end
 
     def decorate!
-      @raw.tap do |request|
-        request[HEADER_KEY] = signed_headers
-      end
+      @raw[HEADER_KEY] = signed_headers
     end
 
     private def canonical_headers
