@@ -20,7 +20,7 @@ module AkamaiCCU
   end
 
   def sign_HMAC(key:, data:)
-    digest = OpenSSL::HMAC.digest(OpenSSL::Digest::SHA256.new, key, data)
+    digest = OpenSSL::HMAC.digest(OpenSSL::Digest::SHA256.new, data, key)
     Base64.encode64(digest).strip
   end
 end

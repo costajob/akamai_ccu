@@ -4,27 +4,27 @@ require "securerandom"
 module AkamaiCCU
   class Secret
     DIGEST = "EG1-HMAC-SHA256"
-    EQUALITY_REGEX = /\s?+=\s?/
+    EQUALITY = " = "
 
     class << self
-      private def factory(opts)
-        new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", 2048))
+      private def factory(opts, time)
+        new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", 2048), time: time)
       end
 
-      def by_file(name)
+      def by_file(name, time = Time.now)
         return unless File.exist?(name)
         data = File.readlines(name).map(&:strip).reject(&:empty?).map do |entry| 
-          entry.split(EQUALITY_REGEX)
+          entry.split(EQUALITY)
         end
-        factory(Hash[data])
+        factory(Hash[data], time)
       end
 
-      def by_edgerc(name = File.join($HOME, ".edgerc"))
+      def by_edgerc(name = File.join($HOME, ".edgerc"), time = Time.now)
         return unless File.exist?(name)
         data = File.readlines(name).map(&:strip)
         data.shift
-        data.map! { |entry| entry.split(EQUALITY_REGEX) }
-        factory(Hash[data])
+        data.map! { |entry| entry.split(EQUALITY) }
+        factory(Hash[data], time)
       end
     end
 

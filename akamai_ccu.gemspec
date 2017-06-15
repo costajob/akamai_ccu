@@ -4,7 +4,7 @@ require "akamai_ccu/version"
 
 Gem::Specification.new do |s|
   s.name = "akamai_ccu"
-  s.version = AkamaiCcu::VERSION
+  s.version = AkamaiCCU::VERSION
   s.authors = ["costajob"]
   s.email = ["costajob@gmail.com"]
   s.summary = "Minimal high performant wrapper around Akamai CCU APIs"
