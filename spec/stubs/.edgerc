@@ -1,0 +1,6 @@
+[test_edgerc]
+client_secret = xxx=
+host = akaa-baseurl-xxx-xxx.luna.akamaiapis.net/
+access_token = akab-access-token-xxx-xxx
+client_token = akab-client-token-xxx-xxx
+max-body = 131072
