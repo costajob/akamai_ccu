@@ -1,5 +1,6 @@
 require "forwardable"
 require "uri"
+require "akamai_ccu/secret"
 
 module AkamaiCCU
   class Request
@@ -40,7 +41,7 @@ module AkamaiCCU
 
     private def signed_body
       return "" unless body?
-      truncated = body[0..max_body-1]
+      truncated = body[0...max_body]
       AkamaiCCU.sign(truncated)
     end
 

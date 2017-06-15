@@ -10,6 +10,10 @@ require "akamai_ccu/request"
 module AkamaiCCU
   extend self
 
+  GET = :Get
+  POST = :Post
+  JSON_CONTENT = { "Content-Type" => "application/json" }
+
   def format_utc(time)
     time.utc.strftime("%Y%m%dT%H:%M:%S+0000")
   end

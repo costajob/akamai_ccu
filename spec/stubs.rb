@@ -3,6 +3,46 @@ module Stubs
 
   Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header)
 
+  Response = Struct.new(:body)
+
+  class HTTP
+    attr_accessor :host, :port
+
+    def initialize(host, port)
+      @host, @port = host, port
+    end
+
+    def request(payload)
+      Response.new("response: #{payload.inspect}") 
+    end
+
+    class Get
+      attr_accessor :uri, :initheader
+
+      def initialize(uri, initheader)
+        @uri, @initheader = uri, initheader
+      end
+
+      def inspect
+        "#{self.class}: uri=#{uri}; initheader=#{initheader.inspect}"
+      end
+    end
+
+    class Post < Get
+      def body
+        @body
+      end
+
+      def body=(body)
+        @body = body
+      end
+
+      def inspect
+        "#{self.class}: uri=#{uri}; initheader=#{initheader.inspect}; body=#{body.inspect}"
+      end
+    end
+  end
+
   Raw = Struct.new(:keys, :body, :body_permitted, :method, :path) do
     def request_body_permitted?
       body_permitted
