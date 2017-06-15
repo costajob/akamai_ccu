@@ -60,7 +60,7 @@ module AkamaiCCU
       AkamaiCCU.sign_HMAC(key: signed_key, data: signature_data.join(TAB))
     end
 
-    private def signed_header
+    def signed_header
       "#{HEADER_NAME}=#{signature}"
     end
 

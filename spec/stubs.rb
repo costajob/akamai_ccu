@@ -29,11 +29,30 @@ module Stubs
     %w[accept user-agent]
   end
 
-  def raw
-    Raw.new({"accept-encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3", "accept"=>"*/*", "user-agent"=> "Ruby"}, "example body of the request", true, "POST", "https://www.ruby-lang.org")
+  def post
+    Raw.new({"accept-encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3", "accept"=>"*/*", "user-agent"=> "Ruby"}, {"objects"=>["/f/4/6848/4h/www.foofoofoo.com/index.php", "/f/4/6848/4h/www.oofoofoof.com/index2.php", "http://www.example.com/graphics/picture.gif", "http://www.example.com/documents/brochure.pdf"]}.to_json, true, "POST", "https://www.ruby-lang.org")
+  end
+
+  def get
+    post.tap do |req|
+      req.body_permitted = false
+      req.method = "GET"
+    end
+  end
+
+  def no_body
+    post.tap do |req|
+      req.body = nil
+    end
   end
 
   def secret
     Secret.new("xxx=", "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", "akab-access-token-xxx-xxx", "akab-client-token-xxx-xxx", 2048, "tbZ+hvr+iv4cmC1+bi8sHCjPw6gqWmsfFYHa+Et1Wro=", "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;")
+  end
+
+  def short_secret
+    secret.tap do |s|
+      s.max_body = 10
+    end
   end
 end
