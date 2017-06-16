@@ -63,9 +63,9 @@ module Stubs
       @host = host
     end
 
-    def call
+    def call(path:)
       req = yield(Stubs.post)
-      "host: #{@host}; body: #{req.body}; auth: #{req["Authorization"]}"
+      "host: #{@host}; path: #{path}; body: #{req.body}; auth: #{req["Authorization"]}"
     end
   end
 

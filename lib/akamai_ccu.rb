@@ -1,11 +1,12 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 
 require "base64"
+require "json"
 require "openssl"
 require "akamai_ccu/version"
 require "akamai_ccu/client"
 require "akamai_ccu/request"
-require "akamai_ccu/purger"
+require "akamai_ccu/invalidator"
 
 module AkamaiCCU
   extend self
@@ -14,7 +15,6 @@ module AkamaiCCU
   POST = :Post
   SSL = "https"
   JSON_HEADER = { "Content-Type" => "application/json" }
-  INVALIDATE_URL = "/ccu/v3/invalidate/url"
 
   def format_utc(time)
     time.utc.strftime("%Y%m%dT%H:%M:%S+0000")

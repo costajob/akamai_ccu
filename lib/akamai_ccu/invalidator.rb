@@ -3,8 +3,10 @@ require "akamai_ccu/request"
 require "akamai_ccu/client"
 
 module AkamaiCCU
-  class Purger
+  class Invalidator
     extend Forwardable
+
+    PATH = "/ccu/v3/invalidate/url"
 
     def_delegators :@secret, :host
 
@@ -15,7 +17,7 @@ module AkamaiCCU
     end
 
     def call(host:, objects: [])
-      client.call do |request|
+      client.call(path: PATH) do |request|
         request.body = { hostname: host, objects: objects }.to_json
         @req_klass.new(raw: request, secret: @secret).decorate!
       end

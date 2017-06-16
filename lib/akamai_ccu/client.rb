@@ -1,4 +1,3 @@
-require "json"
 require "net/http"
 require "openssl"
 
@@ -11,7 +10,7 @@ module AkamaiCCU
       @net_klass = net_klass
     end
 
-    def call(path: INVALIDATE_URL, method: POST, initheader: JSON_HEADER)
+    def call(path: "/", method: POST, initheader: JSON_HEADER)
       request(path, method, initheader)
       yield @request if block_given?
       Thread.new { http.request(@request) }.value
