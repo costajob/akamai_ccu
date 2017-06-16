@@ -23,7 +23,7 @@ describe AkamaiCCU::Secret do
   end
 
   it "must compute signed key" do
-    secret.signed_key.must_equal "7hwx6Grhh0cXlCdykKez9LG0PHLZd8O38P3a67zHvtU="
+    secret.signed_key.must_equal "CXEjELdQCdrniM6/KDrQ5aMeWF1MSKfRGy8v3+/bdPU="
   end
 
   it "must compute auth header" do

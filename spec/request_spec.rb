@@ -15,22 +15,22 @@ describe AkamaiCCU::Request do
   end
 
   it "must decorate original post request" do
-    request_post.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=WCmS/lAStnGqKAX6lVmwbAQxNxxVDnFsT6c7FwQq/+k="
+    request_post.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=ZzUq6DYRJ9hZTDkAMPigr5dzqSG9lOpudYdFjxlrbNY="
   end
 
   it "must decorate original get request" do
-    request_get.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=+5zVz/sorkKbtvGHonrO0njfcoG7Gg5kuB+WibP14yg="
+    request_get.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=HBGsY6rBSk/hIIEFut/Fmoc/e1wC7WPIce7PVe2xpjA="
   end
 
   it "must decorate original no headers request" do
-    request_no_headers.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=ZpqvK3SGBpHsLWIRqN2oMIzumwBMZqVyt4fRqoOjTVc="
+    request_no_headers.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=gC51A3g7TL0yuQEww+IrK4stSZwBoZMOsER+AhK6X8M="
   end
 
   it "must decorate original request by sign truncated body" do
-    request_short.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=VANjLg5RQ/UaJXYBhqr4HPFM5ZeAM0aZCUfd9yuAMnQ="
+    request_short.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=MRfSf4O6D6soELat3Xs2k8wcitxPnDujClRXAyW4d6c="
   end
 
   it "must decorate original no-body request" do
-    request_no_body.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=PEAjVN0pGQrjYbuMI7xVlzxOReniqqr+2qyv0i5fGQs="
+    request_no_body.decorate!.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=v8AZb9HJg7dNr2mOT0Exi57kvJs7yyLBi8yj7Vs1wKw="
   end
 end

@@ -1,38 +1,35 @@
-require "forwardable"
-require "net/http"
 require "json"
-require "akamai_ccu/request"
+require "net/http"
+require "openssl"
 
 module AkamaiCCU
   class Client
-    extend Forwardable
+    attr_reader :net_klass, :host
 
-    def_delegators :@secret, :host
-    
-    attr_reader :net_klass
-
-    def initialize(secret:, net_klass: Net::HTTP)
-      @secret = secret
+    def initialize(host:, net_klass: Net::HTTP)
+      @host = host
       @net_klass = net_klass
     end
 
-    def call(path:, method: GET, initheader: nil)
+    def call(path: INVALIDATE_URL, method: POST, initheader: JSON_HEADER)
       request(path, method, initheader)
       yield @request if block_given?
-      http.request(@request)
+      Thread.new { http.request(@request) }.value
     end
 
     private def base_uri
-      "https://#{host}"
+      @base_uri ||= URI("#{SSL}://#{host}")
     end
 
     private def http
-      @http ||= @net_klass.new(base_uri, SSL_PORT)
+      @http ||= @net_klass.new(base_uri.host, base_uri.port).tap do |http|
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      end
     end
 
     private def request(path, klass = GET, initheader = nil)
-      uri = URI.join(base_uri, path)
-      @request ||= @net_klass.const_get(klass).new(uri.to_s, initheader)
+      @request ||= @net_klass.const_get(klass).new(base_uri.merge(path).to_s, initheader)
     end
   end
 end

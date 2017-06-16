@@ -10,6 +10,6 @@ describe AkamaiCCU do
   end
 
   it "must sign by HMAC digest" do
-    AkamaiCCU.sign_HMAC(key: "my_key", data: "my_data").must_equal "KTcUgA2o7bmekjoh3jEvndC4J23P2gIDLd+wRNixXZk="
+    AkamaiCCU.sign_HMAC(key: "my_key", data: "my_data").must_equal "cgT5WPnSQ+4Ucq2Sd0iReNUllb0URgEkCOxqO8tCohI="
   end
 end

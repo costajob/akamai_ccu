@@ -6,10 +6,11 @@ module Stubs
   Response = Struct.new(:body)
 
   class HTTP
-    attr_accessor :host, :port
+    attr_accessor :host, :port, :verify_mode, :use_ssl
 
     def initialize(host, port)
       @host, @port = host, port
+      @verify_mode, @use_ssl = 0, false
     end
 
     def request(payload)
@@ -29,13 +30,7 @@ module Stubs
     end
 
     class Post < Get
-      def body
-        @body
-      end
-
-      def body=(body)
-        @body = body
-      end
+      attr_accessor :body
 
       def inspect
         "#{self.class}: uri=#{uri}; initheader=#{initheader.inspect}; body=#{body.inspect}"
@@ -43,7 +38,7 @@ module Stubs
     end
   end
 
-  Raw = Struct.new(:keys, :body, :body_permitted, :method, :path) do
+  Request = Struct.new(:keys, :body, :body_permitted, :method, :path) do
     def request_body_permitted?
       body_permitted
     end
@@ -65,12 +60,36 @@ module Stubs
     end
   end
 
+  class Client
+    def initialize(host:)
+      @host = host
+    end
+
+    def call
+      req = yield(Stubs.post)
+      "host: #{@host}; body: #{req.body}; auth: #{req["Authorization"]}"
+    end
+  end
+
+  class Wrapper
+    def initialize(raw:, secret:)
+      @raw = raw
+      @secret = secret
+    end
+
+    def decorate!
+      @raw.tap do |req|
+        req["Authorization"] = "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=ZzUq6DYRJ9hZTDkAMPigr5dzqSG9lOpudYdFjxlrbNY="
+      end
+    end
+  end
+
   def headers
     %w[accept user-agent]
   end
 
   def post
-    Raw.new({"accept-encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3", "accept"=>"*/*", "user-agent"=> "Ruby"}, {"objects"=>["/f/4/6848/4h/www.foofoofoo.com/index.php", "/f/4/6848/4h/www.oofoofoof.com/index2.php", "http://www.example.com/graphics/picture.gif", "http://www.example.com/documents/brochure.pdf"]}.to_json, true, "POST", "https://www.ruby-lang.org")
+    Request.new({"accept-encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3", "accept"=>"*/*", "user-agent"=> "Ruby"}, {"objects"=>["/f/4/6848/4h/www.foofoofoo.com/index.php", "/f/4/6848/4h/www.oofoofoof.com/index2.php", "http://www.example.com/graphics/picture.gif", "http://www.example.com/documents/brochure.pdf"]}.to_json, true, "POST", "https://www.ruby-lang.org")
   end
 
   def get
@@ -86,8 +105,12 @@ module Stubs
     end
   end
 
+  def host
+    "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/"
+  end
+
   def secret
-    Secret.new("xxx=", "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", "akab-access-token-xxx-xxx", "akab-client-token-xxx-xxx", 2048, "tbZ+hvr+iv4cmC1+bi8sHCjPw6gqWmsfFYHa+Et1Wro=", "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;")
+    Secret.new("xxx=", host, "akab-access-token-xxx-xxx", "akab-client-token-xxx-xxx", 2048, "tbZ+hvr+iv4cmC1+bi8sHCjPw6gqWmsfFYHa+Et1Wro=", "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;")
   end
 
   def short_secret
