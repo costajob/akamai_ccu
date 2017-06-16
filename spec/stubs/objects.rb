@@ -2,8 +2,28 @@ module Stubs
   extend self
 
   Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header)
-
   Response = Struct.new(:body)
+  Request = Struct.new(:keys, :body, :body_permitted, :method, :path) do
+    def request_body_permitted?
+      body_permitted
+    end
+
+    def key?(name)
+      keys.has_key?(name)
+    end
+
+    def [](name)
+      keys[name]
+    end
+
+    def []=(name, val)
+      keys[name] = val
+    end
+
+    def fetch(name, &b)
+      keys.fetch(name, &b)
+    end
+  end
 
   class HTTP
     attr_accessor :host, :port, :verify_mode, :use_ssl
@@ -38,28 +58,6 @@ module Stubs
     end
   end
 
-  Request = Struct.new(:keys, :body, :body_permitted, :method, :path) do
-    def request_body_permitted?
-      body_permitted
-    end
-
-    def key?(name)
-      keys.has_key?(name)
-    end
-
-    def [](name)
-      keys[name]
-    end
-
-    def []=(name, val)
-      keys[name] = val
-    end
-
-    def fetch(name, &b)
-      keys.fetch(name, &b)
-    end
-  end
-
   class Client
     def initialize(host:)
       @host = host
@@ -71,7 +69,7 @@ module Stubs
     end
   end
 
-  class Wrapper
+  class Decorator
     def initialize(raw:, secret:)
       @raw = raw
       @secret = secret
@@ -89,7 +87,7 @@ module Stubs
   end
 
   def post
-    Request.new({"accept-encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3", "accept"=>"*/*", "user-agent"=> "Ruby"}, {"objects"=>["/f/4/6848/4h/www.foofoofoo.com/index.php", "/f/4/6848/4h/www.oofoofoof.com/index2.php", "http://www.example.com/graphics/picture.gif", "http://www.example.com/documents/brochure.pdf"]}.to_json, true, "POST", "https://www.ruby-lang.org")
+    Request.new({"accept-encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3", "accept"=>"*/*", "user-agent"=> "Ruby"}, {"objects"=>["http://bc.akamaiapibootcamp.com/index.html"]}.to_json, true, "POST", "https://#{Stubs.host}")
   end
 
   def get

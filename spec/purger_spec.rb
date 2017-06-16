@@ -1,7 +1,7 @@
 require "helper"
 
 describe AkamaiCCU::Purger do
-  let(:purger) { AkamaiCCU::Purger.new(secret: Stubs.secret, client_klass: Stubs::Client, req_klass: Stubs::Wrapper) }
+  let(:purger) { AkamaiCCU::Purger.new(secret: Stubs.secret, client_klass: Stubs::Client, req_klass: Stubs::Decorator) }
 
   it "must call the client with the specified body and auth header" do
     res = purger.call(host: "bc.akamaiapibootcamp.com", objects: %w[/index.html /homepage.html])
