@@ -17,7 +17,7 @@ module AkamaiCCU
       @signer_klass = signer_klass
     end
 
-    def call(objects: [])
+    def call(objects = [])
       client.call(path: PATH) do |request|
         request.body = { hostname: @hostname, objects: objects }.to_json
         @signer_klass.new(request, @secret).call!
