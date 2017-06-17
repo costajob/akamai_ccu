@@ -2,7 +2,7 @@ require "helper"
 
 describe AkamaiCCU do
   it "must generate timestamp as a string" do
-    AkamaiCCU.format_utc(Time.new(2017,1,1,15,30,20)).must_equal "20170101T14:30:20+0000"
+    AkamaiCCU.format_utc(Time.new(2017,1,1,15,30,20, "+01:00")).must_equal "20170101T14:30:20+0000"
   end
 
   it "must sign by digest" do

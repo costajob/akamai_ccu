@@ -1,7 +1,7 @@
 require "helper"
 
 describe AkamaiCCU::Secret do
-  let(:secret) { AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", nonce: "70dc53b8-99a5-4a00-9f04-658eafa437af", time: Time.new(2017,10,29,15,34,12))}
+  let(:secret) { AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", nonce: "70dc53b8-99a5-4a00-9f04-658eafa437af", time: Time.new(2017,10,29,15,34,12, "+01:00"))}
 
   it "must factory an instance by tokens file" do
     secret = AkamaiCCU::Secret.by_file(name: File.expand_path("../stubs/tokens.txt", __FILE__))
