@@ -5,7 +5,7 @@ require "json"
 require "openssl"
 require "akamai_ccu/version"
 require "akamai_ccu/client"
-require "akamai_ccu/request"
+require "akamai_ccu/signer"
 require "akamai_ccu/invalidator"
 
 module AkamaiCCU

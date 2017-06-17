@@ -69,14 +69,14 @@ module Stubs
     end
   end
 
-  class Decorator
-    def initialize(raw:, secret:)
-      @raw = raw
+  class Signer
+    def initialize(request, secret)
+      @request = request
       @secret = secret
     end
 
-    def decorate!
-      @raw.tap do |req|
+    def call!
+      @request.tap do |req|
         req["Authorization"] = "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=ZzUq6DYRJ9hZTDkAMPigr5dzqSG9lOpudYdFjxlrbNY="
       end
     end

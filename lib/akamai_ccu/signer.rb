@@ -3,7 +3,7 @@ require "uri"
 require "akamai_ccu/secret"
 
 module AkamaiCCU
-  class Request
+  class Signer
     extend Forwardable
 
     POST = "POST"
@@ -11,26 +11,26 @@ module AkamaiCCU
     HEADER_NAME = "signature"
     HEADER_KEY = "Authorization"
 
-    def_delegators :@raw, :body, :request_body_permitted?, :path, :method
+    def_delegators :@request, :body, :request_body_permitted?, :path, :method
     def_delegators :@secret, :max_body, :auth_header, :signed_key
 
-    attr_reader :raw
+    attr_reader :request
 
-    def initialize(raw:, secret:, headers: [])
-      @raw = raw
+    def initialize(request, secret, headers = [])
+      @request = request
       @secret = secret
       @headers = headers
       @url = URI(path)
     end
 
-    def decorate!
-      @raw[HEADER_KEY] = signed_headers
+    def call!
+      @request[HEADER_KEY] = signed_headers
     end
 
     private def canonical_headers
       @headers.map do |header|
-        next unless @raw.key?(header)
-        value = @raw[header].strip.gsub(/\s+/, " ")
+        next unless @request.key?(header)
+        value = @request[header].strip.gsub(/\s+/, " ")
         "#{header.downcase}:#{value}"
       end.compact
     end
@@ -49,7 +49,7 @@ module AkamaiCCU
       @signature_data ||= [].tap do |data|
         data << method
         data << @url.scheme
-        data << @raw.fetch("host") { @url.host }
+        data << @request.fetch("host") { @url.host }
         data << @url.request_uri
         data << canonical_headers.join(TAB)
         data << signed_body

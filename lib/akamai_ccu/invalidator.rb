@@ -1,5 +1,5 @@
 require "forwardable"
-require "akamai_ccu/request"
+require "akamai_ccu/signer"
 require "akamai_ccu/client"
 
 module AkamaiCCU
@@ -10,16 +10,17 @@ module AkamaiCCU
 
     def_delegators :@secret, :host
 
-    def initialize(secret:, client_klass: Client, req_klass: Request)
+    def initialize(hostname:, secret:, client_klass: Client, signer_klass: Signer)
+      @hostname = hostname
       @secret = secret
       @client_klass = client_klass
-      @req_klass = req_klass
+      @signer_klass = signer_klass
     end
 
-    def call(host:, objects: [])
+    def call(objects: [])
       client.call(path: PATH) do |request|
-        request.body = { hostname: host, objects: objects }.to_json
-        @req_klass.new(raw: request, secret: @secret).decorate!
+        request.body = { hostname: @hostname, objects: objects }.to_json
+        @signer_klass.new(request, @secret).call!
       end
     end
 
