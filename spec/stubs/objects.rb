@@ -70,9 +70,10 @@ module Stubs
   end
 
   class Signer
-    def initialize(request, secret)
+    def initialize(request, secret, headers = [])
       @request = request
       @secret = secret
+      @headers = headers
     end
 
     def call!

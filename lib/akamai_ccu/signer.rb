@@ -19,7 +19,7 @@ module AkamaiCCU
     def initialize(request, secret, headers = [])
       @request = request
       @secret = secret
-      @headers = headers
+      @headers = Array(headers)
       @url = URI(path)
     end
 
