@@ -2,22 +2,26 @@
 
 * [Scope](#scope)
 * [Motivation](#motivation)
+  * [akamai- edgerid](#akamai-edgerid)
 * [Installation](#installation)
 * [Usage](#usage)
 
 ## Scope
-This gem is a minimal wrapper of the [Akamai Content Control Utility API](https://developer.akamai.com/api/purge/ccu/overview.html) APIs used to purge Edge content by request.  
+This gem is a minimal wrapper of the [Akamai Content Control Utility](https://developer.akamai.com/api/purge/ccu/overview.html) APIs used to purge Edge content by request.  
 The library is compliant with *CCU API V3*, based on the *Fast Purge* utility.
 
 ## Motivation
-A gem to interact with Akamai APIs layer already exists: [akamai-edgegrid](https://github.com/akamai/AkamaiOPEN-edgegrid-ruby).
-The gem is aimed to sign the HTTP request in order for the Akamai endpoint to recognise the client.  
-I've rewritten the akamai-edgegrid functionality for several reasons:
-* the gem is not written with idiomatic ruby, indeed it resembles a Perl script
-* the Net::HTTP class is extended, when decorating the request object is preferable
-* the gem ignore the single responsibility principle by encapsulating the whole logic into a single class
-* i prefer not relying on external dependencies for such a small library
-* my library also includes a client to ease the connection with the CCU interface
+The gem has two main responsibilities:
+1. sign the request to send to Akamai with proper Authorization headers
+2. provide a wrapper around the Akamai CCU V3 APIs
+
+### akamai-edgerid
+There is an official gem to sign HTTP headers by Akamai: [akamai-edgegrid](https://github.com/akamai/AkamaiOPEN-edgegrid-ruby).
+I've decided to go with my own implementation for the following reasons:
+* the gem is not written in idiomatic ruby
+* Net::HTTP core class is extended, ignoring composition
+* the single responsibility principle is broken by a single class
+* i prefer to not rely on external dependencies ;)
 
 ## Installation
 Add this line to your application's Gemfile:

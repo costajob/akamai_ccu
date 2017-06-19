@@ -6,7 +6,7 @@ require "openssl"
 require "akamai_ccu/version"
 require "akamai_ccu/client"
 require "akamai_ccu/signer"
-require "akamai_ccu/invalidator"
+require "akamai_ccu/wrapper"
 
 module AkamaiCCU
   extend self
