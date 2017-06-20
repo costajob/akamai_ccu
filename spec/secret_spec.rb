@@ -1,7 +1,7 @@
 require "helper"
 
 describe AkamaiCCU::Secret do
-  let(:secret) { AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", nonce: "70dc53b8-99a5-4a00-9f04-658eafa437af", time: Time.new(2017,10,29,15,34,12, "+01:00"))}
+  let(:secret) { AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", nonce: "70dc53b8-99a5-4a00-9f04-658eafa437af", time: Time.new(1973,10,29,15,34,12, "+01:00"))}
 
   it "must factory an instance by tokens file" do
     secret = AkamaiCCU::Secret.by_file(name: File.expand_path("../stubs/tokens.txt", __FILE__))
@@ -23,11 +23,21 @@ describe AkamaiCCU::Secret do
   end
 
   it "must compute signed key" do
-    secret.signed_key.must_equal "CXEjELdQCdrniM6/KDrQ5aMeWF1MSKfRGy8v3+/bdPU="
+    secret.signed_key.must_equal "5o7m4TydQSrLtJ6+GWADiUa5Ttna5IgHr0Y3uot1Y74="
   end
 
   it "must compute auth header" do
-    secret.auth_header.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;"
+    secret.auth_header.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=19731029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;"
   end
+
+  it "must update timestamp" do
+    Time.parse(secret.touch).must_be :>, Time.now - 5
+  end
+
+  it "must compute auth header with updated timestamp" do
+    timestamp = secret.touch
+    secret.auth_header.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=#{timestamp};nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;"
+  end
+
 end
 

@@ -1,6 +1,6 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 
-require "minitest/autorun"
 require "akamai_ccu"
+require "minitest/autorun"
 require "stubs/objects"
-
+require "time"

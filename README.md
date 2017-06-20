@@ -16,12 +16,12 @@ The gem has two main responsibilities:
 2. provide a wrapper around the Akamai CCU V3 APIs
 
 ### akamai-edgerid
-There is an official gem to sign HTTP headers by Akamai: [akamai-edgegrid](https://github.com/akamai/AkamaiOPEN-edgegrid-ruby).
-I've decided to go with my own implementation for the following reasons:
-* the gem is not written in idiomatic ruby
-* Net::HTTP core class is extended, ignoring composition
-* the single responsibility principle is broken by a single class
-* i prefer to not rely on external dependencies ;)
+There's an official gem by Akamai to sign HTTP headers called [akamai-edgegrid](https://github.com/akamai/AkamaiOPEN-edgegrid-ruby).  
+I've opted to go with my own implementation for the following reasons:
+* the official gem is not written in idiomatic ruby
+* Net::HTTP core class is extended, ignoring composition/decoration
+* single responsibility principle is broken
+* i prefer not relying on external dependencies when possible
 
 ## Installation
 Add this line to your application's Gemfile:

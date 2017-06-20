@@ -77,18 +77,23 @@ module AkamaiCCU
 
     attr_accessor :secret, :client_klass, :signer_klass
 
-    def initialize(secret: nil, api: API.default, client_klass: Client, signer_klass: Signer, headers: [])
+    def initialize(secret: nil, api: API.default, 
+                   client_klass: Client, signer_klass: Signer, 
+                   headers: [], touch: true)
       @secret = secret
       @api = api
       @client_klass = client_klass
       @signer_klass = signer_klass
       @headers = headers
+      @touch = touch
     end
 
     def call(objects = [])
-      return if objects.empty?
+      return :missing_objects if objects.empty?
+      return :missing_secret unless @secret
       client.call(path: @api.path) do |request|
         request.body = { objects: objects }.to_json
+        @secret.touch if @touch
         @signer_klass.new(request, @secret, @headers).call!
       end
     end

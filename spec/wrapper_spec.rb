@@ -2,6 +2,7 @@ require "helper"
 
 describe AkamaiCCU::Wrapper do
   let(:objects) { %w[https://bc.akamaiapibootcamp.com/index.html https://bc.akamaiapibootcamp.com/homepage.html] }
+  let(:wrapper) { AkamaiCCU::Wrapper.new(secret: Stubs.secret, client_klass: Stubs::Client, signer_klass: Stubs::Signer) }
 
   describe AkamaiCCU::Wrapper::API do
     let(:api) { AkamaiCCU::Wrapper::API.new("production", "invalidate", "cpcode") }
@@ -60,8 +61,16 @@ describe AkamaiCCU::Wrapper do
     res.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://bc.akamaiapibootcamp.com/index.html\",\"https://bc.akamaiapibootcamp.com/homepage.html\"]}"
   end
 
+  it "must return a bening value when no objects are specified" do
+    wrapper.call.must_equal :missing_objects
+  end
+
+  it "must return a bening value when no secret is specified" do
+    wrapper.secret = nil
+    wrapper.call(objects).must_equal :missing_secret
+  end
+
   it "must call the client with the specified body and auth header" do
-    wrapper = AkamaiCCU::Wrapper.new(secret: Stubs.secret, client_klass: Stubs::Client, signer_klass: Stubs::Signer)
     res = wrapper.call(objects)
     res.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/staging;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://bc.akamaiapibootcamp.com/index.html\",\"https://bc.akamaiapibootcamp.com/homepage.html\"]}"
   end

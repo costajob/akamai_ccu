@@ -1,8 +1,12 @@
 module Stubs
   extend self
 
-  Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header)
+  Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header) do
+    def touch; Time.now; end
+  end
+
   Response = Struct.new(:body)
+
   Request = Struct.new(:headers, :body, :body_permitted, :method, :path) do
     def request_body_permitted?
       body_permitted

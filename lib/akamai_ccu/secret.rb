@@ -40,12 +40,16 @@ module AkamaiCCU
       @timestamp = AkamaiCCU.format_utc(time) 
     end
 
+    def touch
+      @timestamp = AkamaiCCU.format_utc(Time.now)
+    end
+
     def signed_key
       AkamaiCCU.sign_HMAC(key: @client_secret, data: @timestamp)
     end
 
     def auth_header
-      @auth_header ||= DIGEST.dup.tap do |header|
+      DIGEST.dup.tap do |header|
         header << " "
         header << "client_token=#{@client_token};"
         header << "access_token=#{@access_token};"
