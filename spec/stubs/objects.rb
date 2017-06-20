@@ -3,25 +3,29 @@ module Stubs
 
   Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header)
   Response = Struct.new(:body)
-  Request = Struct.new(:keys, :body, :body_permitted, :method, :path) do
+  Request = Struct.new(:headers, :body, :body_permitted, :method, :path) do
     def request_body_permitted?
       body_permitted
     end
 
     def key?(name)
-      keys.has_key?(name)
+      headers.has_key?(name)
     end
 
     def [](name)
-      keys[name]
+      headers[name]
     end
 
     def []=(name, val)
-      keys[name] = val
+      headers[name] = val
     end
 
     def fetch(name, &b)
-      keys.fetch(name, &b)
+      headers.fetch(name, &b)
+    end
+
+    def to_s
+      "method=#{method};path=#{path};headers=#{headers.keys.join(",")};body=#{body}"
     end
   end
 
@@ -34,7 +38,7 @@ module Stubs
     end
 
     def request(payload)
-      Response.new("response: #{payload.inspect}") 
+      Response.new(payload.inspect) 
     end
 
     class Get
@@ -45,7 +49,7 @@ module Stubs
       end
 
       def inspect
-        "#{self.class}: uri=#{uri}; initheader=#{initheader.inspect}"
+        "method=#{self.class};uri=#{uri};initheader=#{initheader.inspect}"
       end
     end
 
@@ -53,19 +57,19 @@ module Stubs
       attr_accessor :body
 
       def inspect
-        "#{self.class}: uri=#{uri}; initheader=#{initheader.inspect}; body=#{body.inspect}"
+        "method=#{self.class};uri=#{uri};initheader=#{initheader.inspect};body=#{body.inspect}"
       end
     end
   end
 
   class Client
     def initialize(host:)
-      @host = host
+      @host = "https://#{host}"
     end
 
     def call(path:)
-      req = yield(Stubs.post)
-      "host: #{@host}; path: #{path}; body: #{req.body}; auth: #{req["Authorization"]}"
+      request = yield(Stubs.post)
+      "uri=#{URI.join(@host, path)};request=#{request}"
     end
   end
 
@@ -78,7 +82,7 @@ module Stubs
 
     def call!
       @request.tap do |req|
-        req["Authorization"] = "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=20171029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;signature=ZzUq6DYRJ9hZTDkAMPigr5dzqSG9lOpudYdFjxlrbNY="
+        req["Authorization"] = "#{@request["Authorization"]}"
       end
     end
   end
