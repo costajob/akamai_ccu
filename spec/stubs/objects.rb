@@ -5,7 +5,17 @@ module Stubs
     def touch; Time.now; end
   end
 
-  Response = Struct.new(:body)
+  Response = Struct.new(:body) do
+    def self.by_json(body)
+      new(body)
+    end
+
+    def to_s
+      body.reduce([]) do |acc, (k,v)|
+        acc << "#{k}=#{v}"
+      end.join(";")
+    end
+  end
 
   Request = Struct.new(:headers, :body, :body_permitted, :method, :path) do
     def request_body_permitted?
@@ -73,7 +83,7 @@ module Stubs
 
     def call(path:)
       request = yield(Stubs.post)
-      "uri=#{URI.join(@host, path)};request=#{request}"
+      Response.new(uri: URI.join(@host, path), request: request)
     end
   end
 
@@ -124,5 +134,13 @@ module Stubs
     secret.tap do |s|
       s.max_body = 10
     end
+  end
+
+  def error_body
+    {"type"=>"https://problems.purge.akamaiapis.net/-/pep-authn/request-error", "title"=>"Bad request", "status"=>400, "detail"=>"Invalid timestamp", "instance"=>"https://#{host}/ccu/v3/invalidate/url/staging", "method"=>"POST", "serverIp"=>"88.221.205.237", "clientIp"=>"87.241.53.82", "requestId"=>"20e31be4", "requestTime"=>"2017-06-20T12:19:11Z"}
+  end
+
+  def ack_body
+    {"purgeId"=>"e535071c-26b2-11e7-94d7-276f2f54d938", "estimatedSeconds"=>5, "httpStatus"=>201, "detail"=>"Request accepted", "supportId"=>"17PY1492793544958045-219026624"}
   end
 end

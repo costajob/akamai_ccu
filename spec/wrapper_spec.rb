@@ -2,7 +2,7 @@ require "helper"
 
 describe AkamaiCCU::Wrapper do
   let(:objects) { %w[https://bc.akamaiapibootcamp.com/index.html https://bc.akamaiapibootcamp.com/homepage.html] }
-  let(:wrapper) { AkamaiCCU::Wrapper.new(secret: Stubs.secret, client_klass: Stubs::Client, signer_klass: Stubs::Signer) }
+  let(:wrapper) { AkamaiCCU::Wrapper.new(secret: Stubs.secret, client_klass: Stubs::Client, signer_klass: Stubs::Signer, response_klass: Stubs::Response) }
 
   describe AkamaiCCU::Wrapper::API do
     let(:api) { AkamaiCCU::Wrapper::API.new("production", "invalidate", "cpcode") }
@@ -57,8 +57,10 @@ describe AkamaiCCU::Wrapper do
       w.secret = Stubs.secret
       w.client_klass = Stubs::Client
       w.signer_klass = Stubs::Signer
+      w.response_klass = Stubs::Response
     end
-    res.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://bc.akamaiapibootcamp.com/index.html\",\"https://bc.akamaiapibootcamp.com/homepage.html\"]}"
+    res.must_be_instance_of Stubs::Response
+    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://bc.akamaiapibootcamp.com/index.html\",\"https://bc.akamaiapibootcamp.com/homepage.html\"]}"
   end
 
   it "must return a bening value when no objects are specified" do
@@ -72,6 +74,7 @@ describe AkamaiCCU::Wrapper do
 
   it "must call the client with the specified body and auth header" do
     res = wrapper.call(objects)
-    res.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/staging;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://bc.akamaiapibootcamp.com/index.html\",\"https://bc.akamaiapibootcamp.com/homepage.html\"]}"
+    res.must_be_instance_of wrapper.response_klass
+    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/staging;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://bc.akamaiapibootcamp.com/index.html\",\"https://bc.akamaiapibootcamp.com/homepage.html\"]}"
   end
 end

@@ -7,6 +7,7 @@ require "akamai_ccu/version"
 require "akamai_ccu/client"
 require "akamai_ccu/signer"
 require "akamai_ccu/wrapper"
+require "akamai_ccu/response"
 
 module AkamaiCCU
   extend self
