@@ -44,6 +44,22 @@ You can use this library by including it directly into your script or by relying
 
 ### Inside your scripts
 Include the library directly into your Ruby code:
+```ruby
+require "akamai_ccu"
+
+objects = %w[https://your_host/your_first_resource https://your_host/your_second_resource]
+secret = AkamaiCCU::Secret.by_edgerc("/Users/me/.edgerc") # specify .edgerc path
+
+# deletaing resources on staging network
+res = AkamaiCCU.delete_by_url(objects) do |w|
+  w.secret = secret # you can use a block or specify secret as the second argument
+end
+puts res "status=201; detail=Request accepted; purge_id=e535071c-26b2-11e7-94d7-276f2f54d938; support_id=17PY1492793544958045-219026624; copletion_at=20170620T11:19:16+0000"
+
+# invalidating resources on production network
+secret = AkamaiCCU
+res = AkamaiCCU.invalidate_by_url!(objects, secret)
+```
 
 ### CLI
 Call the CLI interface by:
