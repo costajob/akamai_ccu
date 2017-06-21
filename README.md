@@ -18,8 +18,6 @@
     * [invalidate](#invalidate)
     * [delete](#delete)
     * [Overwriting options](#overwriting-options)
-      * [Secret file](#secret-file)
-      * [Content objects](#content-objects)
   * [Possible issues](#possible-issues)
 
 ## Scope
