@@ -5,6 +5,7 @@ require "json"
 require "openssl"
 require "akamai_ccu/version"
 require "akamai_ccu/wrapper"
+require "akamai_ccu/cli"
 
 module AkamaiCCU
   extend self

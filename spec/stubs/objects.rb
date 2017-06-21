@@ -1,8 +1,14 @@
+require "ostruct"
+
 module Stubs
   extend self
 
   Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header) do
     def touch; Time.now; end
+
+    def self.by_txt(file); file; end
+
+    def self.by_edgerc(file = ".edgerc"); file; end
   end
 
   Response = Struct.new(:body) do
@@ -43,7 +49,22 @@ module Stubs
     end
   end
 
-  Endpoint = Struct.new(:path)
+  Endpoint = Struct.new(:network, :action, :mode) do
+    def path
+      "ccu/v3/#{action}/#{mode}/#{network}"
+    end
+  end
+
+  class Wrapper < OpenStruct
+    def call(objects)
+      [].tap do |a|
+        a << "secret=#{secret}"
+        a << "endpoint=#{endpoint.path}"
+        a << "headers=#{headers.join(",")}" unless headers.empty?
+        a << "objects=#{objects.join(",")}"
+      end.join(";")
+    end
+  end
 
   class HTTP
     attr_accessor :host, :port, :verify_mode, :use_ssl

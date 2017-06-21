@@ -2,7 +2,7 @@ require "helper"
 
 describe AkamaiCCU::Wrapper do
   let(:objects) { %w[https://bc.akamaiapibootcamp.com/index.html https://bc.akamaiapibootcamp.com/homepage.html] }
-  let(:wrapper) { AkamaiCCU::Wrapper.new(secret: Stubs.secret, endpoint: Stubs::Endpoint.new("ccu/v3/invalidate/url/staging"), client_klass: Stubs::Client, signer_klass: Stubs::Signer, response_klass: Stubs::Response) }
+  let(:wrapper) { AkamaiCCU::Wrapper.new(secret: Stubs.secret, endpoint: Stubs::Endpoint.new("staging", "invalidate", "url"), client_klass: Stubs::Client, signer_klass: Stubs::Signer, response_klass: Stubs::Response) }
 
   it "must provide API class methods" do
     AkamaiCCU::Wrapper.must_respond_to :invalidate_by_url
@@ -36,7 +36,7 @@ describe AkamaiCCU::Wrapper do
   end
 
   it "must allow changing the endpoint to swith API" do
-    wrapper.endpoint = Stubs::Endpoint.new("ccu/v3/delete/cpcode/production")
+    wrapper.endpoint = Stubs::Endpoint.new("production", "delete", "cpcode")
     res = wrapper.call(objects)
     res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/delete/cpcode/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://bc.akamaiapibootcamp.com/index.html\",\"https://bc.akamaiapibootcamp.com/homepage.html\"]}"
   end

@@ -14,6 +14,10 @@
     * [Deleting](#deleting)
     * [Reuse client](#reuse-client)
   * [CLI](#cli)
+    * [Help](#help)
+    * [invalidate](#invalidate)
+    * [delete](#delete)
+    * [Overwriting options](#overwriting-options)
 
 ## Scope
 This gem is a minimal wrapper of the [Akamai Content Control Utility](https://developer.akamai.com/api/purge/ccu/overview.html) APIs used to purge Edge content by request.  
@@ -94,19 +98,19 @@ secret = AkamaiCCU::Secret.by_txt("./tokens.txt")
 ```
 
 #### Invalidating
-The CCU V3 APIs allow for invalidating the contents by URL or CPCODE:
+The CCU V3 APIs allow for invalidating the contents by URL or content provider (CP) code:
 ```ruby
 # invalidating resources on staging by url
 AkamaiCCU::Wrapper.invalidate_by_url(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html], secret)
 
-# invalidating resources on production by cpcode
+# invalidating resources on production by CP code
 AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345, 98765], secret)
 ```
 
 #### Deleting
-You can also delete the contents by URL or CPCODE, just be aware of the consequences:
+You can also delete the contents by URL or CP code, just be aware of the consequences:
 ```ruby
-# deleting resources on staging by cpcode
+# deleting resources on staging by CP code
 AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765], secret)
 
 # deleting resources on production by url
@@ -125,5 +129,65 @@ wrapper.api = AkamaiCCU::Endpoint.by_name("delete_by_cpcode!")
 wrapper.call([12345, 98765])
 ```
 
+#### Response
+The Net::HTTP response is wrapped by an utility struct:
+```ruby
+res = AkamaiCCU::Wrapper.invalidate_by_cpcode([12345, 98765], secret)
+puts res 
+> status=201; detail=Request accepted; purge_id=e535071c-26b2-11e7-94d7-276f2f54d938; support_id=17PY1492793544958045-219026624; copletion_at=20170620T11:19:16+0000
+```
+
 ### CLI
-Call the CLI interface by:
+You can use the CLI by:
+
+### Help
+Calling the help for the specific action:
+```shell
+invalidate -h
+Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
+    -e, --edgerc=EDGERC              Load secret by .edgerc file
+    -t, --txt=TXT                    Load secret by TXT file
+    -c, --cp=CP                      Specify contents by provider (CP) codes
+    -u, --url=URL                    Specify contents by URLs
+        --headers=HEADERS            Specify HTTP headers to sign
+    -p, --production                 Purge on production network
+    -h, --help                       Prints this help
+```
+
+### invalidate
+You can request for contents invalidation by calling:
+```shell
+invalidate --edgerc=~/.edgerc \ 
+           --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
+           --production
+```
+
+### delete
+You can request for contents deletion by calling:
+```shell
+delete --txt=~/tokens.txt \ 
+       --cp=12345,98765 \
+       --headers=Accept,Content-Length
+```
+
+### Overwriting options
+The CLI does allow only one option to specify the secret file and the content objects.  
+If multiple options are specified, the program runs by giving the following precedence:
+
+#### edgerc
+The `edgerc` option has always precedente over the `txt` one:
+```shell
+# will load secret from ~/.edgerc
+invalidate --txt=~/tokens.txt \
+           --edgerc=~/.edgerc \
+           --cp=12345,98765
+```
+
+#### CP code
+The `cp` option has always precedente over the `url` one:
+```shell
+# will invalidate by CP code
+invalidate --txt=~/tokens.txt \
+           --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
+           --cp=12345,98765
+```
