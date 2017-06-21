@@ -59,10 +59,10 @@ gem install akamai_ccu
 This gem requires you have a valid Akamai Luna Control Center account, enabled to use the CCU APIs.  
 Akamai relies on a credentials file with three secret keys and a dedicated host for API authorization.  
 Detailing how to get this file is out of the scope of this readme, check Akamai's [official documentation](https://developer.akamai.com/introduction/Conf_Client.html) for that.  
-Suffice to say have two main options:
+Suffice to say you have two main options:
 
 #### edgerc
-You can generate (by facility python scriot or by hand) a hidden file named `.edgerc`:
+You can generate (by facility script or by hand) a specific file named `.edgerc`:
 ```
 [default]
 client_secret = xxx=
@@ -88,7 +88,7 @@ client_token = akab-client-token-xxx-xxx
 You can obviously use the gem directly inside your Ruby's script:
 
 #### Secret
-Once you've got your tokens file, you can instantiate the secret object aimed to generate the authorization header:
+Once you've got APIs credentials, you can instantiate the secret object aimed to generate the authorization header:
 ```ruby
 require "akamai_ccu"
 
@@ -130,7 +130,7 @@ wrapper = AkamaiCCU::Wrapper.new(secret: secret, endpoint: AkamaiCCU::Endpoint.b
 wrapper.call(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css])
 
 # switch to deleting on production
-wrapper.api = AkamaiCCU::Endpoint.by_name("delete_by_cpcode!")
+wrapper.endpoint = AkamaiCCU::Endpoint.by_name("delete_by_cpcode!")
 wrapper.call([12345, 98765])
 ```
 
