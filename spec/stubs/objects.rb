@@ -6,7 +6,7 @@ module Stubs
   end
 
   Response = Struct.new(:body) do
-    def self.by_json(body)
+    def self.factory(body)
       new(body)
     end
 
@@ -42,6 +42,8 @@ module Stubs
       "method=#{method};path=#{path};headers=#{headers.keys.join(",")};body=#{body}"
     end
   end
+
+  Endpoint = Struct.new(:path)
 
   class HTTP
     attr_accessor :host, :port, :verify_mode, :use_ssl

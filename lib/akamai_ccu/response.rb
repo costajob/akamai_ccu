@@ -4,7 +4,7 @@ module AkamaiCCU
   class Response
     BAD_STATUS = 400
 
-    def self.by_json(body)
+    def self.factory(body)
       response = new(body)
       case response
       when ->(res) { res.successful? }
