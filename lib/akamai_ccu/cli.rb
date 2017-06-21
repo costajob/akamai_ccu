@@ -24,8 +24,8 @@ module AkamaiCCU
     end
 
     private def secret
-      return @secret_klass.by_txt(@secret) if File.extname(@secret) == ".txt"
-      @secret_klass.by_edgerc(@secret)
+      return @secret_klass.by_txt(name: @secret) if File.extname(@secret) == ".txt"
+      @secret_klass.by_edgerc(name: @secret)
     end
 
     private def endpoint
