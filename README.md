@@ -76,7 +76,6 @@ host = akaa-baseurl-xxx-xxx.luna.akamaiapis.net/
 access_token = akab-access-token-xxx-xxx
 
 client_token = akab-client-token-xxx-xxx
-
 ```
 
 ### Inside your script
@@ -111,7 +110,7 @@ You can also delete the contents by URL or CPCODE, just be aware of the conseque
 AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765], secret)
 
 # deleting resources on production by url
-AkamaiCCU::Wrapper.delete_by_url!([https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js], secret)
+AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js], secret)
 ```
 
 #### Reuse client
@@ -119,7 +118,7 @@ By default `Wrapper` class methods create a brand new Net::HTTP client on each c
 If this is an issue for you, you can rely on standard instance creation and just change the `endpoint` collaborator to switch API:
 ```ruby
 wrapper = AkamaiCCU::Wrapper.new(secret: secret, endpoint: AkamaiCCU::Endpoint.by_name("invalidate_by_url"))
-wrapper.call([https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css])
+wrapper.call(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css])
 
 # switch to deleting on production
 wrapper.api = AkamaiCCU::Endpoint.by_name("delete_by_cpcode!")
