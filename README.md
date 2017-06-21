@@ -18,6 +18,8 @@
     * [invalidate](#invalidate)
     * [delete](#delete)
     * [Overwriting options](#overwriting-options)
+      * [Secret file](#secret-file)
+      * [Content objects](#content-objects)
 
 ## Scope
 This gem is a minimal wrapper of the [Akamai Content Control Utility](https://developer.akamai.com/api/purge/ccu/overview.html) APIs used to purge Edge content by request.  
@@ -178,7 +180,7 @@ delete --txt=~/tokens.txt \
 The CLI does allow only one option to specify the secret file and the content objects.  
 If multiple options for the same scope are provided, the program runs by giving precedence to:
 
-#### edgerc
+#### Secret file
 The `edgerc` option has always precedence over the `txt` one:
 ```shell
 # will load secret from ~/.edgerc
@@ -187,7 +189,7 @@ invalidate --txt=~/tokens.txt \
            --cp=12345,98765
 ```
 
-#### CP code
+#### Content objects
 The `cp` option has always precedence over the `url` one:
 ```shell
 # will invalidate by CP code
