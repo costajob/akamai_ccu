@@ -6,9 +6,9 @@ module Stubs
   Secret = Struct.new(:client_secret, :host, :access_token, :client_token, :max_body, :signed_key, :auth_header) do
     def touch; Time.now; end
 
-    def self.by_txt(name:); name; end
+    def self.by_txt(name); name; end
 
-    def self.by_edgerc(name: ".edgerc"); name; end
+    def self.by_edgerc(name); name; end
   end
 
   Response = Struct.new(:body) do

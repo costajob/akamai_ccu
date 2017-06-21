@@ -11,7 +11,7 @@ module AkamaiCCU
         new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", 2048), time: time)
       end
 
-      def by_txt(name:, time: Time.now)
+      def by_txt(name, time = Time.now)
         return unless File.exist?(name)
         data = File.readlines(name).map(&:strip).reject(&:empty?).map do |entry| 
           entry.split(EQUALITY)
@@ -19,7 +19,7 @@ module AkamaiCCU
         factory(Hash[data], time)
       end
 
-      def by_edgerc(name: ".edgerc", time: Time.now)
+      def by_edgerc(name = ".edgerc", time = Time.now)
         return unless File.exist?(name)
         data = File.readlines(name).map(&:strip)
         data.shift

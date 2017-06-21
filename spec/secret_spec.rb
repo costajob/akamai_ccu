@@ -4,22 +4,22 @@ describe AkamaiCCU::Secret do
   let(:secret) { AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", nonce: "70dc53b8-99a5-4a00-9f04-658eafa437af", time: Time.new(1973,10,29,15,34,12, "+01:00"))}
 
   it "must factory an instance by tokens file" do
-    secret = AkamaiCCU::Secret.by_txt(name: File.expand_path("../stubs/tokens.txt", __FILE__))
+    secret = AkamaiCCU::Secret.by_txt(File.expand_path("../stubs/tokens.txt", __FILE__))
     secret.must_be_instance_of AkamaiCCU::Secret
     secret.host.to_s.must_equal "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/"
     secret.max_body.must_equal 2048
   end
 
   it "must factory an instance by edgerc file" do
-    secret = AkamaiCCU::Secret.by_edgerc(name: File.expand_path("../stubs/.edgerc", __FILE__))
+    secret = AkamaiCCU::Secret.by_edgerc(File.expand_path("../stubs/.edgerc", __FILE__))
     secret.must_be_instance_of AkamaiCCU::Secret
     secret.host.to_s.must_equal "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/"
     secret.max_body.must_equal 131072
   end
 
   it "must skip factory if file does not exist" do
-    AkamaiCCU::Secret.by_txt(name: "./noent.txt").must_be_nil
-    AkamaiCCU::Secret.by_edgerc(name: "./noent.txt").must_be_nil
+    AkamaiCCU::Secret.by_txt("./noent.txt").must_be_nil
+    AkamaiCCU::Secret.by_edgerc("./noent.txt").must_be_nil
   end
 
   it "must compute signed key" do
