@@ -16,7 +16,7 @@ module AkamaiCCU
 
     attr_reader :request
 
-    def initialize(request, secret = nil, headers = [])
+    def initialize(request, secret, headers = [])
       @request = request
       @secret = secret
       @headers = Array(headers)
@@ -24,7 +24,6 @@ module AkamaiCCU
     end
 
     def call!
-      return unless @secret
       @request[HEADER_KEY] = signed_headers
     end
 

@@ -10,7 +10,7 @@ module AkamaiCCU
         Endpoint::Action.constants.each do |action|
           Endpoint::Mode.constants.each do |mode|
             endpoint = Endpoint.by_constants(network, action, mode)
-            define_method(endpoint.to_s) do |objects = [], secret = nil, headers = [], &block|
+            define_method(endpoint.to_s) do |objects, secret, headers = [], &block|
               wrapper = new(secret: secret, endpoint: endpoint, headers: headers)
               block.call(wrapper) if block
               wrapper.call(objects)

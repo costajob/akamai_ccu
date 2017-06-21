@@ -7,12 +7,6 @@ describe AkamaiCCU::Signer do
   let(:signer_short) { AkamaiCCU::Signer.new(Stubs.post, Stubs.short_secret, Stubs.headers) }
   let(:signer_no_body) { AkamaiCCU::Signer.new(Stubs.no_body, Stubs.secret, Stubs.headers) }
 
-  it "must skip signing for nil secret" do
-    signer = AkamaiCCU::Signer.new(Stubs.post)
-    signer.call!.must_be_nil
-    signer.request.headers.wont_include "Authorization"
-  end
-
   it "must sign the authorization key" do
     [signer_post, signer_get, signer_no_headers, signer_short, signer_no_body].each do |signer|
       signer.call!

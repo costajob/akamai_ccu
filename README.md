@@ -15,8 +15,8 @@
     * [Reuse client](#reuse-client)
   * [CLI](#cli)
     * [Help](#help)
-    * [invalidate](#invalidate)
-    * [delete](#delete)
+    * [ccu_invalidate](#ccu_invalidate)
+    * [ccu_delete](#ccu_delete)
     * [Overwriting options](#overwriting-options)
   * [Possible issues](#possible-issues)
 
@@ -148,7 +148,7 @@ You can use the CLI by:
 #### Help
 Calling the help for the specific action:
 ```shell
-invalidate -h
+ccu_invalidate -h
 Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
     -e, --edgerc=EDGERC              Load secret by .edgerc file
     -t, --txt=TXT                    Load secret by TXT file
@@ -159,20 +159,20 @@ Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
     -h, --help                       Prints this help
 ```
 
-#### invalidate
+#### ccu_invalidate
 You can request for contents invalidation by calling:
 ```shell
-invalidate --edgerc=~/.edgerc \ 
-           --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
-           --production
+ccu_invalidate --edgerc=~/.edgerc \ 
+               --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
+               --production
 ```
 
-#### delete
+#### ccu_delete
 You can request for contents deletion by calling:
 ```shell
-delete --txt=~/tokens.txt \ 
-       --cp=12345,98765 \
-       --headers=Accept,Content-Length
+ccu_delete --txt=~/tokens.txt \ 
+           --cp=12345,98765 \
+           --headers=Accept,Content-Length
 ```
 
 #### Overwriting options
@@ -183,18 +183,18 @@ If multiple options for the same scope are provided, the program runs by giving 
 The `edgerc` option has always precedence over the `txt` one:
 ```shell
 # will load secret from ~/.edgerc
-invalidate --txt=~/tokens.txt \
-           --edgerc=~/.edgerc \
-           --cp=12345,98765
+ccu_invalidate --txt=~/tokens.txt \
+               --edgerc=~/.edgerc \
+               --cp=12345,98765
 ```
 
 ##### Content objects
 The `cp` option has always precedence over the `url` one:
 ```shell
 # will invalidate by CP code
-invalidate --txt=~/tokens.txt \
-           --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
-           --cp=12345,98765
+ccu_invalidate --txt=~/tokens.txt \
+               --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
+               --cp=12345,98765
 ```
 
 ### Possible Issues
@@ -205,5 +205,5 @@ status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; me
 
 This happens since Akamai APIs only tolerate a clock skew of at most 30 seconds to defend against certain network attacks (described [here](https://community.akamai.com/docs/DOC-1336)).  
 In order to fix this annoying issue please do synchronize you server clock by:
-* `NTP` if you are lucky to be on a UX server
+* `NTP` if you are on a UX server
 * `manually` versus an atomic clock site (check Internet) by using your workstation GUI
