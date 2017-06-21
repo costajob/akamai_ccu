@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/costajob/akamai_ccu"
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|test|s|features)/}) }
   s.bindir = "bin"
-  s.executables << "akamai_ccu"
+  s.executables = %w[invalidate delete]
   s.require_paths = ["lib"]
   s.license = "MIT"
   s.required_ruby_version = ">= 2.2.2"
