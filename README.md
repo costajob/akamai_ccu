@@ -203,7 +203,7 @@ It happens you can get a `bad request` response by Akamai like this:
 status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; method=POST; requested_at=2017-06-21T12:33:10Z
 ```
 
-This happens since Akamai APIs only tolerate a clock skew of at most 30 seconds to defend against certain network attacks (described [here](https://community.akamai.com/docs/DOC-1336).
+This happens since Akamai APIs only tolerate a clock skew of at most 30 seconds to defend against certain network attacks (described [here](https://community.akamai.com/docs/DOC-1336)).  
 In order to fix this annoying issue please do synchronize you server clock by:
 * `NTP` if you are lucky to be on a UX server
 * `manually` versus an atomic clock site (check Internet) by using your workstation GUI
