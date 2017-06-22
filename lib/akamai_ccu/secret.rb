@@ -12,16 +12,18 @@ module AkamaiCCU
       end
 
       def by_txt(name, time = Time.now)
-        return unless File.exist?(name)
-        data = File.readlines(name).map(&:strip).reject(&:empty?).map do |entry| 
+        path = File.expand_path(name)
+        return unless File.exist?(path)
+        data = File.readlines(path).map(&:strip).reject(&:empty?).map do |entry| 
           entry.split(EQUALITY)
         end
         factory(Hash[data], time)
       end
 
       def by_edgerc(name = ".edgerc", time = Time.now)
-        return unless File.exist?(name)
-        data = File.readlines(name).map(&:strip)
+        path = File.expand_path(name)
+        return unless File.exist?(path)
+        data = File.readlines(path).map(&:strip)
         data.shift
         data.map! { |entry| entry.split(EQUALITY) }
         factory(Hash[data], time)

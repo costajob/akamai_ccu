@@ -69,7 +69,7 @@ module AkamaiCCU
         end
 
         opts.on("-bBULK", "--bulk=BULK", "Specify bulk contents in a file") do |bulk|
-          @objects = bulk_objects(bulk)
+          @objects = bulk_objects(File.expand_path(bulk))
         end
 
         opts.on("--headers=HEADERS", "Specify HTTP headers to sign") do |headers|
