@@ -112,26 +112,26 @@ AkamaiCCU::Wrapper.setup(secret)
 The CCU V3 APIs allow for invalidating contents by URL or content provider (CP) code:
 ```ruby
 # invalidating resources on staging by url
-AkamaiCCU::Wrapper.invalidate_by_url(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html], secret)
+AkamaiCCU::Wrapper.invalidate_by_url(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html])
 
 # invalidating resources on production (mind the "!") by CP code
-AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345, 98765], secret)
+AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345, 98765])
 ```
 
 #### Deleting
 You can also delete contents by URL or CP code (just be aware of what you're doing):
 ```ruby
 # deleting resources on staging by CP code
-AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765], secret)
+AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765])
 
 # deleting resources on production (mind the "!") by url
-AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js], secret)
+AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js])
 ```
 
 #### Response
 The Net::HTTP response is wrapped by an utility struct:
 ```ruby
-res = AkamaiCCU::Wrapper.invalidate_by_cpcode([12345, 98765], secret)
+res = AkamaiCCU::Wrapper.invalidate_by_cpcode([12345, 98765])
 puts res 
 # status=201; detail=Request accepted; purge_id=e535071c-26b2-11e7-94d7-276f2f54d938; support_id=17PY1492793544958045-219026624; copletion_at=20170620T11:19:16+0000
 ```
