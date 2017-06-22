@@ -3,12 +3,12 @@ require "helper"
 describe AkamaiCCU::CLI do
   let(:io) { StringIO.new }
 
-  it "must warn if no secret is specified" do
+  it "must warn if no contents are specified" do
     AkamaiCCU::CLI.new(args: ["none"], action: "invalidate", io: io).call
-    Stubs.strip_log(io.string).must_equal "WARN -- : specify contents to purge either by cp codes or by urls"
+    Stubs.strip_log(io.string).must_equal "WARN -- : specify contents to purge by bulk, CP codes or urls"
   end
 
-  it "must warn if no objects are specified" do
+  it "must warn if no secret is specified" do
     AkamaiCCU::CLI.new(args: ["--cp=#{Stubs.cpcodes.join(",")}"], action: "invalidate", io: io).call
     Stubs.strip_log(io.string).must_equal "WARN -- : specify path to the secret file either by edgerc or by txt"
   end
