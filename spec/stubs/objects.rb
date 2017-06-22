@@ -56,9 +56,17 @@ module Stubs
   end
 
   class Wrapper < OpenStruct
+    class << self
+      attr_reader :secret
+
+      def setup(secret)
+        @secret = secret
+      end
+    end
+
     def call(objects)
       [].tap do |a|
-        a << "secret=#{File.basename(secret)}"
+        a << "secret=#{File.basename(self.class.secret)}"
         a << "endpoint=#{endpoint.path}"
         a << "headers=#{headers.join(",")}" unless headers.empty?
         a << "objects=#{objects.join(",")}"
