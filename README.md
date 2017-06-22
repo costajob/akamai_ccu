@@ -95,10 +95,10 @@ Once you've got APIs credentials, you can instantiate the secret object aimed to
 require "akamai_ccu"
 
 # by .edgerc
-secret = AkamaiCCU::Secret.by_edgerc("./.edgerc") # default to current working directory
+secret = AkamaiCCU::Secret.by_edgerc(".edgerc")
 
 # by txt file
-secret = AkamaiCCU::Secret.by_txt("./tokens.txt")
+secret = AkamaiCCU::Secret.by_txt("tokens.txt")
 
 # by specifying arguments
 secret = AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", max_body: 131072)
@@ -126,7 +126,7 @@ AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapi
 
 #### Reuse client
 By default `Wrapper` class methods create a brand new Net::HTTP client on each call.  
-If this is an issue for you, you can rely on standard instance creation and just change the `endpoint` collaborator to switch API:
+If this is an issue for you, you can rely `Wrapper#call` instance method and just change the `endpoint` collaborator to switch API:
 ```ruby
 wrapper = AkamaiCCU::Wrapper.new(secret: secret, endpoint: AkamaiCCU::Endpoint.by_name("invalidate_by_url"))
 wrapper.call(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css])
