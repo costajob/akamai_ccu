@@ -58,7 +58,7 @@ module Stubs
   class Wrapper < OpenStruct
     def call(objects)
       [].tap do |a|
-        a << "secret=#{secret}"
+        a << "secret=#{File.basename(secret)}"
         a << "endpoint=#{endpoint.path}"
         a << "headers=#{headers.join(",")}" unless headers.empty?
         a << "objects=#{objects.join(",")}"
@@ -165,5 +165,39 @@ module Stubs
 
   def ack_body
     {"purgeId"=>"e535071c-26b2-11e7-94d7-276f2f54d938", "estimatedSeconds"=>5, "httpStatus"=>201, "detail"=>"Request accepted", "supportId"=>"17PY1492793544958045-219026624"}
+  end
+  
+  def txt_path
+    File.expand_path("../tokens.txt", __FILE__)
+  end
+
+  def edgerc_path
+    File.expand_path("../.edgerc", __FILE__)
+  end
+
+  def strip_log(s)
+    s.strip.split("  ").last
+  end
+
+  def urls
+    %w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js]
+  end
+
+  def cpcodes
+    %w[12345 98765]
+  end
+
+  def bulk_urls
+    Tempfile.new(%w[bulk_urls .txt]).tap do |bulk|
+      urls.each { |url| bulk.puts(url) }
+      bulk.rewind
+    end
+  end
+
+  def bulk_codes
+    Tempfile.new(%w[bulk_codes .txt]).tap do |bulk|
+      cpcodes.each { |code| bulk.puts(code) }
+      bulk.rewind
+    end
   end
 end

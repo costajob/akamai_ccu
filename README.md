@@ -17,6 +17,8 @@
     * [Help](#help)
     * [ccu_invalidate](#ccu_invalidate)
     * [ccu_delete](#ccu_delete)
+    * [Bulk operation](#bulk-operation)
+    * [Redirecting output](#redirecting-output)
     * [Overwriting options](#overwriting-options)
   * [Possible issues](#possible-issues)
 
@@ -163,7 +165,7 @@ Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
 You can request for contents invalidation by calling:
 ```shell
 ccu_invalidate --edgerc=~/.edgerc \ 
-               --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
+               --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js \
                --production
 ```
 
@@ -173,6 +175,31 @@ You can request for contents deletion by calling:
 ccu_delete --txt=~/tokens.txt \ 
            --cp=12345,98765 \
            --headers=Accept,Content-Length
+```
+
+#### Bulk operation
+In case you have multiple contents to work with, it could be impractical to write several entries on the CLI.  
+Just specify them on a separate file and use the bulk option:
+
+`urls.txt` file with each url/CP code specified on one line:
+```txt
+https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css
+https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js
+https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/static/*.html
+```
+
+Specify the bulk option with the path to the file:
+```shell
+ccu_invalidate --edgerc=~/.edgerc --bulk=urls.txt
+```
+
+##### Do not mix content types
+You cannot specify both CP codes and URLs on the same bulk file, mind being consistent!
+
+#### Redirecting output
+In case you're calling the CLI from another program (like your Jenkins script), just redirect the output to your log file:
+```shell
+ccu_invalidate --edgerc=~/.edgerc --cp=12345,98765 > mylog.log
 ```
 
 #### Overwriting options
@@ -189,12 +216,20 @@ ccu_invalidate --txt=~/tokens.txt \
 ```
 
 ##### Content objects
-The `cp` option has always precedence over the `url` one:
+The `bulk` option has always precedence over the `cp` one, that has precedence over the `url`:
+
+This command will invalidate by urls:
 ```shell
-# will invalidate by CP code
 ccu_invalidate --txt=~/tokens.txt \
-               --url="https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js" \
                --cp=12345,98765
+               --bulk=urls.txt
+```
+
+This command will delete by CP codes:
+```shell
+ccu_delete --txt=~/tokens.txt \
+           --cp=12345,98765
+           --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js
 ```
 
 ### Possible Issues

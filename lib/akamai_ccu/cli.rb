@@ -1,3 +1,4 @@
+require "logger"
 require "optparse"
 require "akamai_ccu/wrapper"
 
@@ -9,6 +10,7 @@ module AkamaiCCU
       @args = args
       @action = action
       @io = io
+      @logger = Logger.new(io)
       @wrapper_klass = wrapper_klass
       @secret_klass = secret_klass
       @endpoint_klass = endpoint_klass
@@ -17,10 +19,11 @@ module AkamaiCCU
 
     def call
       parser.parse!(@args)
-      return @io.puts(%q{Specify contents to purge either by cp codes or by urls}) unless @objects
-      return @io.puts(%q{Specify path to the secret file either by edgerc or by txt}) unless @secret
+      return @logger.warn("specify contents to purge either by cp codes or by urls") unless @objects
+      return @logger.warn("specify path to the secret file either by edgerc or by txt") unless @secret
+      return @logger.warn("specified secret file does not exist") unless File.exist?(@secret)
       wrapper = @wrapper_klass.new(secret: secret, endpoint: endpoint, headers: Array(@headers))
-      @io.puts wrapper.call(@objects)
+      @logger.info wrapper.call(@objects).to_s
     end
 
     private def secret
@@ -35,6 +38,14 @@ module AkamaiCCU
     private def mode
       return Endpoint::Mode::CPCODE if @objects.all? { |o| o.is_a?(Integer) } 
       Endpoint::Mode::URL
+    end
+
+    private def bulk_objects(file)
+      return unless File.exist?(file)
+      File.readlines(file).map(&:strip).reject(&:empty?).map do |entry|
+        entry = entry.to_i unless entry.start_with?("http")
+        entry
+      end
     end
 
     private def parser
@@ -55,6 +66,10 @@ module AkamaiCCU
 
         opts.on("-uURL", "--url=URL", "Specify contents by URLs") do |objects|
           @objects = objects.split(",").map(&:strip)
+        end
+
+        opts.on("-bBULK", "--bulk=BULK", "Specify bulk contents in a file") do |bulk|
+          @objects = bulk_objects(bulk)
         end
 
         opts.on("--headers=HEADERS", "Specify HTTP headers to sign") do |headers|
