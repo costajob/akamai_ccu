@@ -156,6 +156,7 @@ Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
     -t, --txt=TXT                    Load secret by TXT file
     -c, --cp=CP                      Specify contents by provider (CP) codes
     -u, --url=URL                    Specify contents by URLs
+    -b, --bulk=BULK                  Specify bulk contents in a file
         --headers=HEADERS            Specify HTTP headers to sign
     -p, --production                 Purge on production network
     -h, --help                       Prints this help
