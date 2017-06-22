@@ -103,8 +103,13 @@ secret = AkamaiCCU::Secret.by_txt("tokens.txt")
 secret = AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", max_body: 131072)
 ```
 
+The next step is setting the `Wrapper` class with the secret object (Net client and secret will be shared by successive calls):
+```ruby
+AkamaiCCU::Wrapper.setup(secret)
+```
+
 #### Invalidating
-The CCU V3 APIs allow for invalidating the contents by URL or content provider (CP) code:
+The CCU V3 APIs allow for invalidating contents by URL or content provider (CP) code:
 ```ruby
 # invalidating resources on staging by url
 AkamaiCCU::Wrapper.invalidate_by_url(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html], secret)
@@ -114,7 +119,7 @@ AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345, 98765], secret)
 ```
 
 #### Deleting
-You can also delete the contents by URL or CP code, just be aware of the consequences:
+You can also delete contents by URL or CP code (just be aware of what you're doing):
 ```ruby
 # deleting resources on staging by CP code
 AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765], secret)
