@@ -53,11 +53,11 @@ module AkamaiCCU
         opts.banner = %Q{Usage: #{@action} --edgerc=./.edgerc --production --cp="12345, 98765"}
 
         opts.on("-eEDGERC", "--edgerc=EDGERC", "Load secret by .edgerc file") do |secret|
-          @secret = secret
+          @secret = File.expand_path(secret)
         end
 
         opts.on("-tTXT", "--txt=TXT", "Load secret by TXT file") do |secret|
-          @secret = secret
+          @secret = File.expand_path(secret)
         end
 
         opts.on("-cCP", "--cp=CP", "Specify contents by provider (CP) codes") do |objects|

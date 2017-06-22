@@ -188,7 +188,7 @@ https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js
 https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/static/*.html
 ```
 
-Specify the bulk option with the path to the file:
+Specify the bulk option by using the file path:
 ```shell
 ccu_invalidate --edgerc=~/.edgerc --bulk=urls.txt
 ```
