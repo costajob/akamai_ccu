@@ -180,7 +180,7 @@ module Stubs
   end
 
   def urls
-    %w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js]
+    %w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js]
   end
 
   def cpcodes

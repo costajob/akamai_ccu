@@ -35,13 +35,13 @@ describe AkamaiCCU::CLI do
   it "must call delete on production by cp url" do
     cli = AkamaiCCU::CLI.new(args: ["--url=#{Stubs.urls.join(",")}", "--edgerc=#{Stubs.edgerc_path}", "--production"], action: "delete", io: io, wrapper_klass: Stubs::Wrapper, secret_klass: Stubs::Secret, endpoint_klass: Stubs::Endpoint)
     cli.call
-    Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/delete/url/production;objects=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js"
+    Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/delete/url/production;objects=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js"
   end
 
   it "must call invalidate on production by bulk urls" do
     cli = AkamaiCCU::CLI.new(args: ["--bulk=#{Stubs.bulk_urls.path}", "--edgerc=#{Stubs.edgerc_path}", "--production"], action: "invalidate", io: io, wrapper_klass: Stubs::Wrapper, secret_klass: Stubs::Secret, endpoint_klass: Stubs::Endpoint)
     cli.call
-    Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/invalidate/url/production;objects=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js"
+    Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/invalidate/url/production;objects=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js"
   end
 
   it "must call delete on staging by bulk cpcodes" do
@@ -65,7 +65,7 @@ describe AkamaiCCU::CLI do
   it "must give precedence to bulk if also cpcode option is specified" do
     cli = AkamaiCCU::CLI.new(args: ["--cp=#{Stubs.cpcodes.join(",")}", "--bulk=#{Stubs.bulk_urls.path}", "--edgerc=#{Stubs.edgerc_path}"], action: "invalidate", io: io, wrapper_klass: Stubs::Wrapper, secret_klass: Stubs::Secret, endpoint_klass: Stubs::Endpoint)
     cli.call
-    Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/invalidate/url/staging;objects=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js"
+    Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/invalidate/url/staging;objects=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js"
   end
 
   it "must give precedence to edgerc if also txt option is specified" do

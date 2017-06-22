@@ -21,7 +21,7 @@ describe AkamaiCCU::Wrapper do
       w.response_klass = Stubs::Response
     end
     res.must_be_instance_of Stubs::Response
-    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\",\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js\"]}"
+    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\",\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js\"]}"
   end
 
   it "must return early when no objects are specified" do
@@ -31,12 +31,12 @@ describe AkamaiCCU::Wrapper do
   it "must call the client with the specified body and auth header" do
     res = wrapper.call(Stubs.urls)
     res.must_be_instance_of wrapper.response_klass
-    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/staging;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\",\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js\"]}"
+    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/invalidate/url/staging;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\",\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js\"]}"
   end
 
   it "must allow changing the endpoint to swith API" do
     wrapper.endpoint = Stubs::Endpoint.new("production", "delete", "cpcode")
     res = wrapper.call(Stubs.urls)
-    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/delete/cpcode/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\",\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js\"]}"
+    res.to_s.must_equal "uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/delete/cpcode/production;request=method=POST;path=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;headers=accept-encoding,accept,user-agent,Authorization;body={\"objects\":[\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\",\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js\"]}"
   end
 end

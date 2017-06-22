@@ -4,11 +4,11 @@
 * [Motivation](#motivation)
   * [akamai-edgerid](#akamai-edgerid)
 * [Installation](#installation)
-* [Usage](#usage)
   * [Configuration](#configuration)
     * [edgerc](#edgerc)
     * [txt](#txt)
-  * [Inside your script](#inside-your-script)
+* [Usage](#usage)
+  * [As library](#as-library)
     * [Secret](#secret)
     * [Invalidating](#invalidating)
     * [Deleting](#deleting)
@@ -55,8 +55,6 @@ Or install it yourself as:
 gem install akamai_ccu
 ```
 
-## Usage
-
 ### Configuration
 This gem requires you have a valid Akamai Luna Control Center account, enabled to use the CCU APIs.  
 Akamai relies on a credentials file with three secret keys and a dedicated host for API authorization.  
@@ -86,8 +84,10 @@ access_token = akab-access-token-xxx-xxx
 client_token = akab-client-token-xxx-xxx
 ```
 
-### Inside your script
-You can obviously use the gem directly inside your Ruby's script:
+## Usage
+
+### As library
+You can require the gem to use it as a library inside your scripts:
 
 #### Secret
 Once you've got APIs credentials, you can instantiate the secret object aimed to generate the authorization header:
@@ -121,7 +121,7 @@ You can also delete the contents by URL or CP code, just be aware of the consequ
 AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765], secret)
 
 # deleting resources on production (mind the "!") by url
-AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js], secret)
+AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js], secret)
 ```
 
 #### Reuse client
@@ -129,7 +129,7 @@ By default `Wrapper` class methods create a brand new Net::HTTP client on each c
 If this is an issue for you, you can use the `Wrapper#call` instance method and update the `endpoint` collaborator to switch API:
 ```ruby
 wrapper = AkamaiCCU::Wrapper.new(secret: secret, endpoint: AkamaiCCU::Endpoint.by_name("invalidate_by_url"))
-wrapper.call(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css])
+wrapper.call(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css])
 
 # switch to deleting on production
 wrapper.endpoint = AkamaiCCU::Endpoint.by_name("delete_by_cpcode!")
@@ -166,7 +166,7 @@ Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
 You can request for contents invalidation by calling:
 ```shell
 ccu_invalidate --edgerc=~/.edgerc \ 
-               --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js \
+               --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js \
                --production
 ```
 
@@ -184,9 +184,9 @@ Just specify them on a separate file and use the bulk option:
 
 `urls.txt` file with each url/CP code specified on one line:
 ```txt
-https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css
-https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js
-https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/static/*.html
+https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css
+https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js
+https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/static/index.html
 ```
 
 Specify the bulk option by using the file path:
@@ -230,7 +230,7 @@ This command will delete by CP codes:
 ```shell
 ccu_delete --txt=~/tokens.txt \
            --cp=12345,98765
-           --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js
+           --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js
 ```
 
 ### Possible Issues

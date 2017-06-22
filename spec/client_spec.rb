@@ -12,6 +12,6 @@ describe AkamaiCCU::Client do
     res = client.call do |request|
       request.body = { hostname: "bc.akamaiapibootcamp.com", objects: Stubs.urls }.to_json
     end
-    res.body.must_equal "method=Stubs::HTTP::Post;uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;initheader={\"Content-Type\"=>\"application/json\"};body=\"{\\\"hostname\\\":\\\"bc.akamaiapibootcamp.com\\\",\\\"objects\\\":[\\\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\\\",\\\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.js\\\"]}\""
+    res.body.must_equal "method=Stubs::HTTP::Post;uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;initheader={\"Content-Type\"=>\"application/json\"};body=\"{\\\"hostname\\\":\\\"bc.akamaiapibootcamp.com\\\",\\\"objects\\\":[\\\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html\\\",\\\"https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js\\\"]}\""
   end
 end
