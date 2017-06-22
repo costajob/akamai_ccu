@@ -30,14 +30,16 @@ describe AkamaiCCU::Secret do
     secret.auth_header.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=19731029T14:34:12+0000;nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;"
   end
 
-  it "must update timestamp" do
-    Time.parse(secret.touch).must_be :>, Time.now - 5
+  it "must update timestamp and nonce" do
+    old_nonce = secret.nonce
+    secret.touch
+    secret.nonce.must_be :!=, old_nonce
+    Time.parse(secret.timestamp).must_be :>, Time.now - 5
   end
 
-  it "must compute auth header with updated timestamp" do
-    timestamp = secret.touch
-    secret.auth_header.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=#{timestamp};nonce=70dc53b8-99a5-4a00-9f04-658eafa437af;"
+  it "must compute auth header with updated timestamp and nonce" do
+    secret.touch
+    secret.auth_header.must_equal "EG1-HMAC-SHA256 client_token=akab-client-token-xxx-xxx;access_token=akab-access-token-xxx-xxx;timestamp=#{secret.timestamp};nonce=#{secret.nonce};"
   end
-
 end
 

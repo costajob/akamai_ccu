@@ -12,7 +12,6 @@
     * [Secret](#secret)
     * [Invalidating](#invalidating)
     * [Deleting](#deleting)
-    * [Reuse client](#reuse-client)
   * [CLI](#cli)
     * [Help](#help)
     * [ccu_invalidate](#ccu_invalidate)
@@ -122,18 +121,6 @@ AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765], secret)
 
 # deleting resources on production (mind the "!") by url
 AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js], secret)
-```
-
-#### Reuse client
-By default `Wrapper` class methods create a brand new Net::HTTP client on each call.  
-If this is an issue for you, you can use the `Wrapper#call` instance method and update the `endpoint` collaborator to switch API:
-```ruby
-wrapper = AkamaiCCU::Wrapper.new(secret: secret, endpoint: AkamaiCCU::Endpoint.by_name("invalidate_by_url"))
-wrapper.call(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css])
-
-# switch to deleting on production
-wrapper.endpoint = AkamaiCCU::Endpoint.by_name("delete_by_cpcode!")
-wrapper.call([12345, 98765])
 ```
 
 #### Response

@@ -30,9 +30,10 @@ module AkamaiCCU
       end
     end
 
-    attr_reader :host, :max_body
+    attr_reader :host, :max_body, :nonce, :timestamp
 
-    def initialize(client_secret:, host:, access_token:, client_token:, max_body: 2048, nonce: SecureRandom.uuid, time: Time.now)
+    def initialize(client_secret:, host:, access_token:, client_token:, 
+                   max_body: 2048, nonce: SecureRandom.uuid, time: Time.now)
       @client_secret = client_secret
       @host = URI(host)
       @access_token = access_token
@@ -43,7 +44,9 @@ module AkamaiCCU
     end
 
     def touch
+      @nonce = SecureRandom.uuid
       @timestamp = AkamaiCCU.format_utc(Time.now)
+      self
     end
 
     def signed_key

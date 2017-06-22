@@ -3,6 +3,12 @@ require "helper"
 describe AkamaiCCU::Client do
   let(:client) { AkamaiCCU::Client.new(host: Stubs.host, net_klass: Stubs::HTTP) }
 
+  it "must set HTTP use_ssl and verify mode" do
+    http = client.send(:http)
+    http.use_ssl.must_equal true
+    http.verify_mode.must_equal OpenSSL::SSL::VERIFY_PEER
+  end
+
   it "must execute request method on GET" do
     res = client.call(method: AkamaiCCU::GET, initheader: nil)
     res.body.must_equal "method=Stubs::HTTP::Get;uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/;initheader=nil"

@@ -71,7 +71,6 @@ module Stubs
 
     def initialize(host, port)
       @host, @port = host, port
-      @verify_mode, @use_ssl = 0, false
     end
 
     def request(payload)

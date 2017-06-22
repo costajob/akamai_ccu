@@ -22,7 +22,8 @@ module AkamaiCCU
       return @logger.warn("specify contents to purge by bulk, CP codes or urls") unless @objects
       return @logger.warn("specify path to the secret file either by edgerc or by txt") unless @secret
       return @logger.warn("specified secret file does not exist") unless File.exist?(@secret)
-      wrapper = @wrapper_klass.new(secret: secret, endpoint: endpoint, headers: Array(@headers))
+      @wrapper_klass.setup(secret)
+      wrapper = @wrapper_klass.new(endpoint: endpoint, headers: Array(@headers))
       @logger.info wrapper.call(@objects).to_s
     end
 
