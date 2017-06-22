@@ -126,7 +126,7 @@ AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapi
 
 #### Reuse client
 By default `Wrapper` class methods create a brand new Net::HTTP client on each call.  
-If this is an issue for you, you can rely `Wrapper#call` instance method and just change the `endpoint` collaborator to switch API:
+If this is an issue for you, you can use the `Wrapper#call` instance method and update the `endpoint` collaborator to switch API:
 ```ruby
 wrapper = AkamaiCCU::Wrapper.new(secret: secret, endpoint: AkamaiCCU::Endpoint.by_name("invalidate_by_url"))
 wrapper.call(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/*.css])
