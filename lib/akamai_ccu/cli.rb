@@ -21,7 +21,7 @@ module AkamaiCCU
 
     def call
       parser.parse!(@args)
-      return @logger.warn("specify contents to purge by bulk, CP codes or urls") unless @objects
+      return @logger.warn("specify contents to purge by bulk, CP codes or urls") if Array(@objects).empty?
       return @logger.warn("specify path to the secret file either by edgerc or by txt") unless @secret
       return @logger.warn("specified secret file does not exist") unless File.exist?(@secret)
       @wrapper_klass.setup(secret)

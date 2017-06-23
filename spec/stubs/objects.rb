@@ -215,4 +215,11 @@ module Stubs
       bulk.rewind
     end
   end
+
+  def bulk_invalid
+    Tempfile.new(%w[bulk_invalid .txt]).tap do |bulk|
+      %w[index.html main.js stylesheets/homepage.css].each { |entry| bulk.puts(entry) }
+      bulk.rewind
+    end
+  end
 end

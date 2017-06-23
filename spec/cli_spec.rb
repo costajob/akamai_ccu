@@ -56,7 +56,13 @@ describe AkamaiCCU::CLI do
     Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/invalidate/cpcode/staging;objects=12345,98765"
   end
 
-  it "must give precedence to cpcode if also url option is specified" do
+  it "must warn of no contents when entries in bulk file are invalid" do
+    cli = AkamaiCCU::CLI.new(args: ["--bulk=#{Stubs.bulk_invalid.path}", "--edgerc=#{Stubs.edgerc_path}"], action: "invalidate", io: io, wrapper_klass: Stubs::Wrapper, secret_klass: Stubs::Secret, endpoint_klass: Stubs::Endpoint)
+    cli.call
+    Stubs.strip_log(io.string).must_equal "WARN -- : specify contents to purge by bulk, CP codes or urls"
+  end
+
+  it "must give precedence to cp option if also url one is specified" do
     cli = AkamaiCCU::CLI.new(args: ["--url=#{Stubs.urls.join(",")}", "--cp=#{Stubs.cpcodes.join(",")}", "--edgerc=#{Stubs.edgerc_path}"], action: "invalidate", io: io, wrapper_klass: Stubs::Wrapper, secret_klass: Stubs::Secret, endpoint_klass: Stubs::Endpoint)
     cli.call
     Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/invalidate/cpcode/staging;objects=12345,98765"
