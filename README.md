@@ -240,12 +240,12 @@ status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; me
 
 This happens since Akamai APIs only tolerate a clock skew of at most 30 seconds to defend against certain network attacks (described [here](https://community.akamai.com/docs/DOC-1336)).  
 In order to fix this annoying issue please do synchronize you server clock by:
-* `NTP` if you are on a UX server
-* `manually` versus an atomic clock site (check Internet) by using your workstation GUI
+* `NTP` versus a stratum 2 server, if you are running on UX OS
+* `manually` versus an [atomic clock site](https://watches.uhrzeit.org/atomic-clock.php) by using your workstation GUI
 
 #### No wildcard
 Do keep in mind CCU V3 APIs doesn't support contents specification by wildcard.
 
 #### Mixed bulk
-When specifying contents by bulk on the CLI, you cannot include both CP codes and URLs resources on the same file.  
+When specifying contents by bulk on the CLI, you cannot include both CP codes and URLs resources on the same file. 
 The library tries to detect which mode to use basing on entries kind: mixing them will generate unexpected behaviour.
