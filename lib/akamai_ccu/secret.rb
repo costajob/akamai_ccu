@@ -17,7 +17,7 @@ module AkamaiCCU
       def by_file(name = "~/.edgerc", time = Time.now)
         path = File.expand_path(name)
         return unless File.exist?(path)
-        data = File.readlines(path).map(&:strip).reduce([]) do |acc, entry|
+        data = File.readlines(path).reduce([]) do |acc, entry|
           m = entry.match(ENTRY_REGEX)
           acc << [m[1], m[2]] if m
           acc
