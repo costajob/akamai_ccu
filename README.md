@@ -65,7 +65,7 @@ gem install akamai_ccu
 This gem requires you have a valid Akamai Luna Control Center account, enabled to add APIs clients.  
 Upon APIs client creation, you'll get the `client token` to be used to generate new APIs credentials data: these consist of a secret key, two token (client and access) and a dedicated host for API authorization.  
 Check Akamai's [official documentation](https://developer.akamai.com/introduction/Conf_Client.html) for more details.  
-Suffice to say you have two main options to import credentials data:
+You have two main options to import credentials data:
 
 #### edgerc
 You can generate (using a script or by hand) an INI file named `.edgerc`:
@@ -117,7 +117,7 @@ AkamaiCCU::Wrapper.setup(secret)
 
 #### Edge network
 Purging actions runs on the `staging` network by default.  
-Switch to production by just appending a shebang `!` on the method name.
+Switch to `production` network by just appending a shebang `!` on the method name.
 
 #### Invalidating
 The CCU V3 APIs allow for invalidating contents by URLs or content provider (CP) codes: currently only the former relies on the Fast Purge Utility.  
