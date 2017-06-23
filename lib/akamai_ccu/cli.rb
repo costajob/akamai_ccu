@@ -4,6 +4,8 @@ require "akamai_ccu/wrapper"
 
 module AkamaiCCU
   class CLI
+    SCHEME = "http"
+
     attr_reader :network, :action
 
     def initialize(args:, action:, io: STDOUT, wrapper_klass: Wrapper, secret_klass: Secret, endpoint_klass: Endpoint)
@@ -43,10 +45,9 @@ module AkamaiCCU
 
     private def bulk_objects(file)
       return unless File.exist?(file)
-      File.readlines(file).map(&:strip).reject(&:empty?).map do |entry|
-        entry = entry.to_i unless entry.start_with?("http")
-        entry
-      end
+      data = File.readlines(file).map(&:strip).reject(&:empty?)
+      return data if data.all? { |entry| entry.downcase.start_with?(SCHEME) }
+      data.map(&:to_i).reject(&:zero?)
     end
 
     private def parser

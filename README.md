@@ -10,9 +10,9 @@
 * [Usage](#usage)
   * [As library](#as-library)
     * [Secret](#secret)
+    * [Edge network](#edge-network)
     * [Invalidating](#invalidating)
     * [Deleting](#deleting)
-    * [No wildcard](#no-wildcard)
   * [CLI](#cli)
     * [Help](#help)
     * [ccu_invalidate](#ccu_invalidate)
@@ -21,6 +21,9 @@
     * [Redirecting output](#redirecting-output)
     * [Overwriting options](#overwriting-options)
   * [Possible issues](#possible-issues)
+    * [Invalid timestamp](#invalid-timestamp)
+    * [No wildcard](#no-wildcard)
+    * [Mixed bulk](#mixed-bulk)
 
 ## Scope
 This gem is a minimal wrapper of the [Akamai Content Control Utility](https://developer.akamai.com/api/purge/ccu/overview.html) APIs used to purge Edge content by request.  
@@ -109,11 +112,14 @@ The next step is setting the `Wrapper` class with the secret object, the secret 
 AkamaiCCU::Wrapper.setup(secret)
 ```
 
+#### Edge network
+Purging actions runs on the `staging` network by default.  
+Switch to production by just appending a shebang `!` on the method name.
+
 #### Invalidating
-The CCU V3 APIs allow for invalidating contents by URL or content provider (CP) code: currently only the former relies on the Fast Purge Utility.  
-Purging actions runs on the `staging` network by default, switch to production by appending a shebang `!` on the method name:
+The CCU V3 APIs allow for invalidating contents by URLs or content provider (CP) codes: currently only the former relies on the Fast Purge Utility.  
 ```ruby
-# invalidating resources on staging by url
+# invalidating resources on staging by URLs
 AkamaiCCU::Wrapper.invalidate_by_url(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html])
 
 # invalidating resources on production (mind the "!") by CP code
@@ -121,17 +127,14 @@ AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345, 98765])
 ```
 
 #### Deleting
-You can delete contents by URL or CP code as well, just be aware of what you're doing:
+You can delete contents by URLs or CP codes as well, just be aware of what you're doing:
 ```ruby
-# deleting resources on staging by CP code
+# deleting resources on staging by CP codes
 AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765])
 
-# deleting resources on production (mind the "!") by url
+# deleting resources on production (mind the "!") by URLs
 AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js])
 ```
-
-#### No wildcard
-CCU V3 APIs does not currently support contents specification by wildcard.
 
 #### Response
 The Net::HTTP response is wrapped by an utility struct:
@@ -179,7 +182,7 @@ ccu_delete --txt=~/tokens.txt \
 In case you have multiple contents to work with, it could be impractical to write several entries on the CLI.  
 Just specify them on a separate file and use the bulk option:
 
-`urls.txt` file with url/CP code entries specified on a new line:
+`urls.txt` file with URL entries specified on a new line:
 ```txt
 https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css
 https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js
@@ -190,9 +193,6 @@ Specify the bulk option by using the file path:
 ```shell
 ccu_invalidate --edgerc=~/.edgerc --bulk=urls.txt
 ```
-
-##### Do not mix content types
-You cannot specify both CP codes and URLs on the same bulk file, mind being consistent!
 
 #### Redirecting output
 In case you're calling the CLI from another program (like your Jenkins script), just redirect the output to your log file:
@@ -216,7 +216,7 @@ ccu_invalidate --txt=~/tokens.txt \
 ##### Contents
 The `bulk` option has always precedence over the `cp` one, that has precedence over  `url`:
 
-This command will invalidate by urls:
+This command will invalidate by URLs:
 ```shell
 ccu_invalidate --txt=~/tokens.txt \
                --cp=12345,98765
@@ -231,6 +231,8 @@ ccu_delete --txt=~/tokens.txt \
 ```
 
 ### Possible Issues
+
+#### Invalid timestamp
 You could get a `bad request` response like this:
 ```shell
 status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; method=POST; requested_at=2017-06-21T12:33:10Z
@@ -240,3 +242,10 @@ This happens since Akamai APIs only tolerate a clock skew of at most 30 seconds 
 In order to fix this annoying issue please do synchronize you server clock by:
 * `NTP` if you are on a UX server
 * `manually` versus an atomic clock site (check Internet) by using your workstation GUI
+
+#### No wildcard
+Do keep in mind CCU V3 APIs doesn't support contents specification by wildcard.
+
+#### Mixed bulk
+When specifying contents by bulk on the CLI, you cannot include both CP codes and URLs resources on the same file.  
+The library tries to detect which mode to use basing on entries kind: mixing them will generate unexpected behaviour.

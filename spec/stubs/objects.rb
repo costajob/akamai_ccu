@@ -207,4 +207,12 @@ module Stubs
       bulk.rewind
     end
   end
+
+  def bulk_mixed
+    Tempfile.new(%w[bulk_mixed .txt]).tap do |bulk|
+      cpcodes.each { |code| bulk.puts(code) }
+      urls.each { |url| bulk.puts(url) }
+      bulk.rewind
+    end
+  end
 end

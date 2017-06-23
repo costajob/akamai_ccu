@@ -50,6 +50,12 @@ describe AkamaiCCU::CLI do
     Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/delete/cpcode/staging;objects=12345,98765"
   end
 
+  it "must consider only CP codes when mixing entries in bulk file" do
+    cli = AkamaiCCU::CLI.new(args: ["--bulk=#{Stubs.bulk_mixed.path}", "--edgerc=#{Stubs.edgerc_path}"], action: "invalidate", io: io, wrapper_klass: Stubs::Wrapper, secret_klass: Stubs::Secret, endpoint_klass: Stubs::Endpoint)
+    cli.call
+    Stubs.strip_log(io.string).must_equal "INFO -- : secret=.edgerc;endpoint=ccu/v3/invalidate/cpcode/staging;objects=12345,98765"
+  end
+
   it "must give precedence to cpcode if also url option is specified" do
     cli = AkamaiCCU::CLI.new(args: ["--url=#{Stubs.urls.join(",")}", "--cp=#{Stubs.cpcodes.join(",")}", "--edgerc=#{Stubs.edgerc_path}"], action: "invalidate", io: io, wrapper_klass: Stubs::Wrapper, secret_klass: Stubs::Secret, endpoint_klass: Stubs::Endpoint)
     cli.call
