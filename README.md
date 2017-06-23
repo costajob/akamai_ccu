@@ -8,7 +8,7 @@
     * [edgerc](#edgerc)
     * [txt](#txt)
 * [Usage](#usage)
-  * [As library](#as-library)
+  * [Library](#Library)
     * [Secret](#secret)
     * [Edge network](#edge-network)
     * [Invalidating](#invalidating)
@@ -92,7 +92,7 @@ client_token = akab-client-token-xxx-xxx
 
 ## Usage
 
-### As library
+### Library
 You can require the gem to use it as a library inside your scripts:
 
 #### Secret
