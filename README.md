@@ -12,6 +12,7 @@
     * [Secret](#secret)
     * [Invalidating](#invalidating)
     * [Deleting](#deleting)
+    * [No wildcard](#no-wildcard)
   * [CLI](#cli)
     * [Help](#help)
     * [ccu_invalidate](#ccu_invalidate)
@@ -23,7 +24,7 @@
 
 ## Scope
 This gem is a minimal wrapper of the [Akamai Content Control Utility](https://developer.akamai.com/api/purge/ccu/overview.html) APIs used to purge Edge content by request.  
-The library is compliant with [CCU API V3](https://developer.akamai.com/api/purge/ccu/resources.html), based on the *Fast Purge* utility.
+The library is compliant with [CCU API V3](https://developer.akamai.com/api/purge/ccu/resources.html), based on the *Fast Purge Utility*.
 
 ## Motivation
 The gem has two main responsibilities:
@@ -55,13 +56,13 @@ gem install akamai_ccu
 ```
 
 ### Configuration
-This gem requires you have a valid Akamai Luna Control Center account, enabled to use the CCU APIs.  
-Akamai relies on a credentials file with three secret keys and a dedicated host for API authorization.  
-Detailing how to get this file is out of the scope of this readme, check Akamai's [official documentation](https://developer.akamai.com/introduction/Conf_Client.html) for that.  
-Suffice to say you have two main options:
+This gem requires you have a valid Akamai Luna Control Center account, enabled to add APIs clients.  
+Upon APIs client creation, you'll get the `client token` to be used to generate new APIs credentials data: these consist of a secret key, two token (client and access) and a dedicated host for API authorization.  
+Check Akamai's [official documentation](https://developer.akamai.com/introduction/Conf_Client.html) for more details.  
+Suffice to say you have two main options to import credentials data:
 
 #### edgerc
-You can generate (by facility script or by hand) a specific file named `.edgerc`:
+You can generate (using a script or by hand) an INI file named `.edgerc`:
 ```
 [default]
 client_secret = xxx=
@@ -72,7 +73,7 @@ max-body = 131072
 ```
 
 #### txt
-You can download a plain text file directly from Luna Control Center `Manage APIs` page:
+You can download a plain text file upon credentials data creation:
 ```
 client_secret = xxx=
 
@@ -99,17 +100,18 @@ secret = AkamaiCCU::Secret.by_edgerc(".edgerc")
 # by txt file
 secret = AkamaiCCU::Secret.by_txt("tokens.txt")
 
-# by specifying arguments
+# by using initializer
 secret = AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", max_body: 131072)
 ```
 
-The next step is setting the `Wrapper` class with the secret object (Net client and secret will be shared by successive calls):
+The next step is setting the `Wrapper` class with the secret object, the secret and Net::HTTP client instances are shared between calls:
 ```ruby
 AkamaiCCU::Wrapper.setup(secret)
 ```
 
 #### Invalidating
-The CCU V3 APIs allow for invalidating contents by URL or content provider (CP) code:
+The CCU V3 APIs allow for invalidating contents by URL or content provider (CP) code: currently only the former relies on the Fast Purge Utility.  
+Purging actions runs on the `staging` network by default, switch to production by appending a shebang `!` on the method name:
 ```ruby
 # invalidating resources on staging by url
 AkamaiCCU::Wrapper.invalidate_by_url(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html])
@@ -119,7 +121,7 @@ AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345, 98765])
 ```
 
 #### Deleting
-You can also delete contents by URL or CP code (just be aware of what you're doing):
+You can delete contents by URL or CP code as well, just be aware of what you're doing:
 ```ruby
 # deleting resources on staging by CP code
 AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765])
@@ -127,6 +129,9 @@ AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765])
 # deleting resources on production (mind the "!") by url
 AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js])
 ```
+
+#### No wildcard
+CCU V3 APIs does not currently support contents specification by wildcard.
 
 #### Response
 The Net::HTTP response is wrapped by an utility struct:
@@ -155,7 +160,7 @@ Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
 ```
 
 #### ccu_invalidate
-You can request for contents invalidation by calling:
+Do request for contents invalidation by:
 ```shell
 ccu_invalidate --edgerc=~/.edgerc \ 
                --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js \
@@ -163,7 +168,7 @@ ccu_invalidate --edgerc=~/.edgerc \
 ```
 
 #### ccu_delete
-You can request for contents deletion by calling:
+Do request for contents deletion by:
 ```shell
 ccu_delete --txt=~/tokens.txt \ 
            --cp=12345,98765 \
@@ -174,7 +179,7 @@ ccu_delete --txt=~/tokens.txt \
 In case you have multiple contents to work with, it could be impractical to write several entries on the CLI.  
 Just specify them on a separate file and use the bulk option:
 
-`urls.txt` file with each url/CP code specified on one line:
+`urls.txt` file with url/CP code entries specified on a new line:
 ```txt
 https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css
 https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js
@@ -196,20 +201,20 @@ ccu_invalidate --edgerc=~/.edgerc --cp=12345,98765 > mylog.log
 ```
 
 #### Overwriting options
-The CLI does allow only one option to specify the secret file and the content objects.  
-If multiple options for the same scope are provided, the program runs by giving precedence to:
+The CLI allows different options for the same scope on secret and contents specification. If multiple options for the same scope are provided, the program runs by assigning specific precedence rules:
 
-##### Secret file
+##### Secret
 The `edgerc` option has always precedence over the `txt` one:
+
+This command will load secret from ~/.edgerc:
 ```shell
-# will load secret from ~/.edgerc
 ccu_invalidate --txt=~/tokens.txt \
                --edgerc=~/.edgerc \
                --cp=12345,98765
 ```
 
-##### Content objects
-The `bulk` option has always precedence over the `cp` one, that has precedence over the `url`:
+##### Contents
+The `bulk` option has always precedence over the `cp` one, that has precedence over  `url`:
 
 This command will invalidate by urls:
 ```shell
@@ -226,7 +231,7 @@ ccu_delete --txt=~/tokens.txt \
 ```
 
 ### Possible Issues
-It happens you can get a `bad request` response by Akamai like this:
+You could get a `bad request` response like this:
 ```shell
 status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; method=POST; requested_at=2017-06-21T12:33:10Z
 ```
