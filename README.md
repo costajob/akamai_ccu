@@ -8,7 +8,7 @@
     * [edgerc](#edgerc)
     * [txt](#txt)
 * [Usage](#usage)
-  * [Library](#Library)
+  * [Library](#library)
     * [Secret](#secret)
     * [Edge network](#edge-network)
     * [Invalidating](#invalidating)
