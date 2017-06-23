@@ -151,7 +151,7 @@ You can use the CLI by:
 Calling the help for the specific action:
 ```shell
 ccu_invalidate -h
-Usage: ccu_invalidate --secret=~/.edgerc --production --cp="12345, 98765"
+Usage: ccu_invalidate --secret=~/.edgerc --production --cp=12345,98765
     -s, --secret=SECRET              Load secret data by file
     -c, --cp=CP                      Specify contents by provider (CP) codes
     -u, --url=URL                    Specify contents by URLs
