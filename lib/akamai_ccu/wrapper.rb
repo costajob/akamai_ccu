@@ -7,10 +7,12 @@ module AkamaiCCU
   class Wrapper
     class << self
       attr_reader :secret, :client
+      attr_accessor :logger
 
-      def setup(secret, client_klass = Client)
+      def setup(secret, client_klass = Client, logger = Logger.new(nil))
         @secret ||= secret
         @client ||= client_klass.new(host: @secret.host)
+        @logger ||= logger
       end
 
       Endpoint::Network.constants.each do |network|
@@ -37,11 +39,13 @@ module AkamaiCCU
     end
 
     def call(objects)
-      res = self.class.client.call(path: @endpoint.path) do |request|
+      response = self.class.client.call(path: @endpoint.path) do |request|
         request.body = { objects: objects }.to_json
         @signer_klass.new(request, self.class.secret.touch, @headers).call!
+        self.class.logger.debug { "request: uri=#{request.path}; body=#{request.body}; authorization=#{request["Authorization"]}" }
       end
-      response_klass.factory(res.body)
+      self.class.logger.debug { "response: inspect=#{response.inspect}; body=#{response.body}" }
+      response_klass.factory(response.body)
     end
   end
 end

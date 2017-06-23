@@ -20,6 +20,9 @@
     * [Bulk operation](#bulk-operation)
     * [Redirecting output](#redirecting-output)
     * [Overwriting options](#overwriting-options)
+  * [Logging](#logging)
+    * [Library logger](#library-logger)
+    * [CLI logger](#cli-logger)
   * [Possible issues](#possible-issues)
     * [Invalid timestamp](#invalid-timestamp)
     * [No wildcard](#no-wildcard)
@@ -98,7 +101,7 @@ Once you've got APIs credentials, you can instantiate the secret object aimed to
 require "akamai_ccu"
 
 # by .edgerc
-secret = AkamaiCCU::Secret.by_edgerc(".edgerc")
+secret = AkamaiCCU::Secret.by_edgerc(".edgerc") # default to ~/.edgerc
 
 # by txt file
 secret = AkamaiCCU::Secret.by_txt("tokens.txt")
@@ -197,7 +200,7 @@ ccu_invalidate --edgerc=~/.edgerc --bulk=urls.txt
 #### Redirecting output
 In case you're calling the CLI from another program (like your Jenkins script), just redirect the output to your log file:
 ```shell
-ccu_invalidate --edgerc=~/.edgerc --cp=12345,98765 > mylog.log
+ccu_invalidate --edgerc=~/.edgerc --cp=12345,98765 >> mylog.log
 ```
 
 #### Overwriting options
@@ -228,6 +231,22 @@ This command will delete by CP codes:
 ccu_delete --txt=~/tokens.txt \
            --cp=12345,98765
            --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js
+```
+
+### Logging
+
+#### Library logger
+By default the `Wrapper` class accepts a logger pointing to `dev/null`. 
+In case you want to replace it with yours, just use the class attribute writer:
+```ruby
+AkamaiCCU::Wrapper.logger = Logger.new(STDOUT)
+```
+
+#### CLI logger
+CLI uses a logger writing to `STDOUT` by default with an `INFO` level.  
+In case you want to control the log level, just pass an environment variable to the script:
+```shell
+LOG_LEVEL=DEBUG ccu_invalidate --edgerc=~/.edgerc --cp=12345,98765
 ```
 
 ### Possible Issues

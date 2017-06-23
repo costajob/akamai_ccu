@@ -20,7 +20,7 @@ module AkamaiCCU
         factory(Hash[data], time)
       end
 
-      def by_edgerc(name, time = Time.now)
+      def by_edgerc(name = "~/.edgerc", time = Time.now)
         path = File.expand_path(name)
         return unless File.exist?(path)
         data = File.readlines(path).map(&:strip)

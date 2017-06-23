@@ -59,8 +59,10 @@ module Stubs
     class << self
       attr_reader :secret
 
-      def setup(secret)
+      def setup(secret, client, logger)
         @secret = secret
+        @client = client
+        @logger = logger
       end
     end
 
@@ -112,7 +114,8 @@ module Stubs
     end
 
     def call(path:)
-      request = yield(Stubs.post)
+      request = Stubs.post
+      yield(request)
       Response.new(uri: URI.join(@host, path), request: request)
     end
   end

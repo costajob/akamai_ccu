@@ -4,12 +4,14 @@ describe AkamaiCCU::Wrapper do
   before { AkamaiCCU::Wrapper.setup(Stubs.secret, Stubs::Client) }
   let(:wrapper) { AkamaiCCU::Wrapper.new(endpoint: Stubs::Endpoint.new("staging", "invalidate", "url"), signer_klass: Stubs::Signer, response_klass: Stubs::Response) }
 
-  it "must reuse secret and client" do
+  it "must reuse class instance variables" do
     secret = AkamaiCCU::Wrapper.secret
     client = AkamaiCCU::Wrapper.client
-    AkamaiCCU::Wrapper.setup(Stubs.secret, Stubs::Client)
+    logger = AkamaiCCU::Wrapper.logger
+    AkamaiCCU::Wrapper.setup(Stubs.secret, Stubs::Client, Logger.new(STDOUT))
     secret.must_be_same_as AkamaiCCU::Wrapper.secret
     client.must_be_same_as AkamaiCCU::Wrapper.client
+    logger.must_be_same_as AkamaiCCU::Wrapper.logger
   end
 
   it "must provide API class methods" do

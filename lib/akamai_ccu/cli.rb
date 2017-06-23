@@ -5,6 +5,7 @@ require "akamai_ccu/wrapper"
 module AkamaiCCU
   class CLI
     SCHEME = "http"
+    LOG_LEVEL = Logger.const_get(ENV.fetch("LOG_LEVEL", "INFO"))
 
     attr_reader :network, :action
 
@@ -13,6 +14,7 @@ module AkamaiCCU
       @action = action
       @io = io
       @logger = Logger.new(io)
+      @logger.level = LOG_LEVEL
       @wrapper_klass = wrapper_klass
       @secret_klass = secret_klass
       @endpoint_klass = endpoint_klass
@@ -24,7 +26,7 @@ module AkamaiCCU
       return @logger.warn("specify contents to purge by bulk, CP codes or urls") if Array(@objects).empty?
       return @logger.warn("specify path to the secret file either by edgerc or by txt") unless @secret
       return @logger.warn("specified secret file does not exist") unless File.exist?(@secret)
-      @wrapper_klass.setup(secret)
+      @wrapper_klass.setup(secret, Client, @logger)
       wrapper = @wrapper_klass.new(endpoint: endpoint, headers: Array(@headers))
       @logger.info wrapper.call(@objects).to_s
     end
