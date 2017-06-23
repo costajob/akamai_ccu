@@ -26,14 +26,9 @@ module AkamaiCCU
       return @logger.warn("specify contents to purge by bulk, CP codes or urls") if Array(@objects).empty?
       return @logger.warn("specify path to the secret file either by edgerc or by txt") unless @secret
       return @logger.warn("specified secret file does not exist") unless File.exist?(@secret)
-      @wrapper_klass.setup(secret, Client, @logger)
+      @wrapper_klass.setup(@secret_klass.by_file(@secret), Client, @logger)
       wrapper = @wrapper_klass.new(endpoint: endpoint, headers: Array(@headers))
       @logger.info wrapper.call(@objects).to_s
-    end
-
-    private def secret
-      return @secret_klass.by_txt(@secret) if File.extname(@secret) == ".txt"
-      @secret_klass.by_edgerc(@secret)
     end
 
     private def endpoint
@@ -54,13 +49,9 @@ module AkamaiCCU
 
     private def parser
       OptionParser.new do |opts|
-        opts.banner = %Q{Usage: ccu_#{@action} --edgerc=./.edgerc --production --cp="12345, 98765"}
+        opts.banner = %Q{Usage: ccu_#{@action} --secret=~/.edgerc --production --cp="12345, 98765"}
 
-        opts.on("-eEDGERC", "--edgerc=EDGERC", "Load secret by .edgerc file") do |secret|
-          @secret = File.expand_path(secret)
-        end
-
-        opts.on("-tTXT", "--txt=TXT", "Load secret by TXT file") do |secret|
+        opts.on("-sSECRET", "--secret=SECRET", "Load secret data by file") do |secret|
           @secret = File.expand_path(secret)
         end
 

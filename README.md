@@ -100,11 +100,8 @@ Once you've got APIs credentials, you can instantiate the secret object aimed to
 ```ruby
 require "akamai_ccu"
 
-# by .edgerc
-secret = AkamaiCCU::Secret.by_edgerc(".edgerc") # default to ~/.edgerc
-
-# by txt file
-secret = AkamaiCCU::Secret.by_txt("tokens.txt")
+# by file, both .edgerc or .txt one
+secret = AkamaiCCU::Secret.by_file("~/tokens.txt") # default to ~/.edgerc
 
 # by using initializer
 secret = AkamaiCCU::Secret.new(client_secret: "xxx=", host: "akaa-baseurl-xxx-xxx.luna.akamaiapis.net/", access_token: "akab-access-token-xxx-xxx", client_token: "akab-client-token-xxx-xxx", max_body: 131072)
@@ -154,9 +151,8 @@ You can use the CLI by:
 Calling the help for the specific action:
 ```shell
 ccu_invalidate -h
-Usage: ccu_invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
-    -e, --edgerc=EDGERC              Load secret by .edgerc file
-    -t, --txt=TXT                    Load secret by TXT file
+Usage: ccu_invalidate --secret=~/.edgerc --production --cp="12345, 98765"
+    -s, --secret=SECRET              Load secret data by file
     -c, --cp=CP                      Specify contents by provider (CP) codes
     -u, --url=URL                    Specify contents by URLs
     -b, --bulk=BULK                  Specify bulk contents in a file
@@ -168,7 +164,7 @@ Usage: ccu_invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
 #### ccu_invalidate
 Do request for contents invalidation by:
 ```shell
-ccu_invalidate --edgerc=~/.edgerc \ 
+ccu_invalidate --secret=~/.edgerc \ 
                --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js \
                --production
 ```
@@ -176,7 +172,7 @@ ccu_invalidate --edgerc=~/.edgerc \
 #### ccu_delete
 Do request for contents deletion by:
 ```shell
-ccu_delete --txt=~/tokens.txt \ 
+ccu_delete --secret=~/tokens.txt \ 
            --cp=12345,98765 \
            --headers=Accept,Content-Length
 ```
@@ -194,41 +190,32 @@ https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/static/index.html
 
 Specify the bulk option by using the file path:
 ```shell
-ccu_invalidate --edgerc=~/.edgerc --bulk=urls.txt
+ccu_invalidate --secret=~/.edgerc --bulk=urls.txt
 ```
 
 #### Redirecting output
 In case you're calling the CLI from another program (like your Jenkins script), just redirect the output to your log file:
 ```shell
-ccu_invalidate --edgerc=~/.edgerc --cp=12345,98765 >> mylog.log
+ccu_invalidate --secret=~/.edgerc --cp=12345,98765 >> mylog.log
 ```
 
 #### Overwriting options
-The CLI allows different options for the same scope on secret and contents specification. If multiple options for the same scope are provided, the program runs by assigning specific precedence rules:
+The CLI allows different options to specify the contents to be purged.  
+If multiple options for contents are provided, the program runs by specific precedence rules:
 
-##### Secret
-The `edgerc` option has always precedence over the `txt` one:
-
-This command will load secret from ~/.edgerc:
-```shell
-ccu_invalidate --txt=~/tokens.txt \
-               --edgerc=~/.edgerc \
-               --cp=12345,98765
-```
-
-##### Contents
+##### Options precedence
 The `bulk` option has always precedence over the `cp` one, that has precedence over  `url`:
 
 This command will invalidate by URLs:
 ```shell
-ccu_invalidate --txt=~/tokens.txt \
+ccu_invalidate --secret=~/tokens.txt \
                --cp=12345,98765
                --bulk=urls.txt
 ```
 
 This command will delete by CP codes:
 ```shell
-ccu_delete --txt=~/tokens.txt \
+ccu_delete --secret=~/tokens.txt \
            --cp=12345,98765
            --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js
 ```
@@ -246,7 +233,7 @@ AkamaiCCU::Wrapper.logger = Logger.new(STDOUT)
 CLI uses a logger writing to `STDOUT` by default with an `INFO` level.  
 In case you want to control the log level, just pass an environment variable to the script:
 ```shell
-LOG_LEVEL=DEBUG ccu_invalidate --edgerc=~/.edgerc --cp=12345,98765
+LOG_LEVEL=DEBUG ccu_invalidate --secret=~/.edgerc --cp=12345,98765
 ```
 
 ### Possible Issues

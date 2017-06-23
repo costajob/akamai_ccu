@@ -4,36 +4,34 @@ require "securerandom"
 module AkamaiCCU
   class Secret
     DIGEST = "EG1-HMAC-SHA256"
-    EQUALITY = " = "
+    ENTRY_REGEX = /(.+?)\s?=\s?(.+)/ 
+    BODY_SIZE = 131072
+
+    class FileContentError < ArgumentError; end
 
     class << self
       private def factory(opts, time)
-        new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", 2048), time: time)
+        new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", BODY_SIZE), time: time)
       end
 
-      def by_txt(name, time = Time.now)
+      def by_file(name = "~/.edgerc", time = Time.now)
         path = File.expand_path(name)
         return unless File.exist?(path)
-        data = File.readlines(path).map(&:strip).reject(&:empty?).map do |entry| 
-          entry.split(EQUALITY)
+        data = File.readlines(path).map(&:strip).reduce([]) do |acc, entry|
+          m = entry.match(ENTRY_REGEX)
+          acc << [m[1], m[2]] if m
+          acc
         end
         factory(Hash[data], time)
-      end
-
-      def by_edgerc(name = "~/.edgerc", time = Time.now)
-        path = File.expand_path(name)
-        return unless File.exist?(path)
-        data = File.readlines(path).map(&:strip)
-        data.shift
-        data.map! { |entry| entry.split(EQUALITY) }
-        factory(Hash[data], time)
+      rescue KeyError => e
+        raise FileContentError, "bad file content, #{e.message}", e.backtrace
       end
     end
 
     attr_reader :host, :max_body, :nonce, :timestamp
 
     def initialize(client_secret:, host:, access_token:, client_token:, 
-                   max_body: 2048, nonce: SecureRandom.uuid, time: Time.now)
+                   max_body: BODY_SIZE, nonce: SecureRandom.uuid, time: Time.now)
       @client_secret = client_secret
       @host = URI(host)
       @access_token = access_token
