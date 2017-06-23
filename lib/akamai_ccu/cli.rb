@@ -54,7 +54,7 @@ module AkamaiCCU
 
     private def parser
       OptionParser.new do |opts|
-        opts.banner = %Q{Usage: #{@action} --edgerc=./.edgerc --production --cp="12345, 98765"}
+        opts.banner = %Q{Usage: ccu_#{@action} --edgerc=./.edgerc --production --cp="12345, 98765"}
 
         opts.on("-eEDGERC", "--edgerc=EDGERC", "Load secret by .edgerc file") do |secret|
           @secret = File.expand_path(secret)

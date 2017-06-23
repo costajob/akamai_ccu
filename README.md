@@ -154,7 +154,7 @@ You can use the CLI by:
 Calling the help for the specific action:
 ```shell
 ccu_invalidate -h
-Usage: invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
+Usage: ccu_invalidate --edgerc=./.edgerc --production --cp="12345, 98765"
     -e, --edgerc=EDGERC              Load secret by .edgerc file
     -t, --txt=TXT                    Load secret by TXT file
     -c, --cp=CP                      Specify contents by provider (CP) codes

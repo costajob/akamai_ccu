@@ -22,7 +22,7 @@ describe AkamaiCCU::CLI do
     begin
       AkamaiCCU::CLI.new(args: %w[--help], action: "invalidate", io: io).call
     rescue SystemExit
-      io.string.must_equal "Usage: invalidate --edgerc=./.edgerc --production --cp=\"12345, 98765\"\n    -e, --edgerc=EDGERC              Load secret by .edgerc file\n    -t, --txt=TXT                    Load secret by TXT file\n    -c, --cp=CP                      Specify contents by provider (CP) codes\n    -u, --url=URL                    Specify contents by URLs\n    -b, --bulk=BULK                  Specify bulk contents in a file\n        --headers=HEADERS            Specify HTTP headers to sign\n    -p, --production                 Purge on production network\n    -h, --help                       Prints this help\n"
+      io.string.must_equal "Usage: ccu_invalidate --edgerc=./.edgerc --production --cp=\"12345, 98765\"\n    -e, --edgerc=EDGERC              Load secret by .edgerc file\n    -t, --txt=TXT                    Load secret by TXT file\n    -c, --cp=CP                      Specify contents by provider (CP) codes\n    -u, --url=URL                    Specify contents by URLs\n    -b, --bulk=BULK                  Specify bulk contents in a file\n        --headers=HEADERS            Specify HTTP headers to sign\n    -p, --production                 Purge on production network\n    -h, --help                       Prints this help\n"
     end
   end
 
