@@ -9,19 +9,17 @@ module AkamaiCCU
 
     class FileContentError < ArgumentError; end
 
-    class << self
-      def by_file(name = "~/.edgerc", time = Time.now)
-        path = File.expand_path(name)
-        return unless File.exist?(path)
-        opts = File.readlines(path).reduce({}) do |acc, entry|
-          _, k, v = Array(entry.match(ENTRY_REGEX))
-          acc[k] = v if k && v
-          acc
-        end
-        new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", BODY_SIZE), time: time)
-      rescue KeyError => e
-        raise FileContentError, "bad file content, #{e.message}", e.backtrace
+    def self.by_file(name = "~/.edgerc", time = Time.now)
+      path = File.expand_path(name)
+      return unless File.exist?(path)
+      opts = File.readlines(path).reduce({}) do |acc, entry|
+        _, k, v = Array(entry.match(ENTRY_REGEX))
+        acc[k] = v if k && v
+        acc
       end
+      new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", BODY_SIZE), time: time)
+    rescue KeyError => e
+      raise FileContentError, "bad file content, #{e.message}", e.backtrace
     end
 
     attr_reader :host, :max_body, :nonce, :timestamp

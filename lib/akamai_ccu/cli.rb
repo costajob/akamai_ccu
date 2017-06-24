@@ -18,13 +18,13 @@ module AkamaiCCU
       @wrapper_klass = wrapper_klass
       @secret_klass = secret_klass
       @endpoint_klass = endpoint_klass
+      @secret = File.expand_path("~/.edgerc")
       @network = Endpoint::Network::STAGING
     end
 
     def call
       parser.parse!(@args)
       return @logger.warn("specify contents to purge by bulk, CP codes or urls") if Array(@objects).empty?
-      return @logger.warn("specify path to the secret file either by edgerc or by txt") unless @secret
       return @logger.warn("specified secret file does not exist") unless File.exist?(@secret)
       @wrapper_klass.setup(@secret_klass.by_file(@secret), Client, @logger)
       wrapper = @wrapper_klass.new(endpoint: endpoint, headers: Array(@headers))
@@ -51,7 +51,7 @@ module AkamaiCCU
       OptionParser.new do |opts|
         opts.banner = "Usage: ccu_#{@action} --secret=~/.edgerc --production --cp=12345,98765"
 
-        opts.on("-sSECRET", "--secret=SECRET", "Load secret data by file") do |secret|
+        opts.on("-sSECRET", "--secret=SECRET", "Load secret by file (default to ~/.edgerc)") do |secret|
           @secret = File.expand_path(secret)
         end
 
@@ -67,7 +67,7 @@ module AkamaiCCU
           @objects = bulk_objects(File.expand_path(bulk))
         end
 
-        opts.on("--headers=HEADERS", "Specify HTTP headers to sign") do |headers|
+        opts.on("--headers=HEADERS", "Specify any HTTP headers to sign") do |headers|
           @headers = headers.split(",").map(&:strip)
         end
 

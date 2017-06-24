@@ -8,11 +8,6 @@ describe AkamaiCCU::CLI do
     Stubs.strip_log(io.string).must_equal "WARN -- : specify contents to purge by bulk, CP codes or urls"
   end
 
-  it "must warn if no secret is specified" do
-    AkamaiCCU::CLI.new(args: ["--cp=#{Stubs.cpcodes.join(",")}"], action: "invalidate", io: io).call
-    Stubs.strip_log(io.string).must_equal "WARN -- : specify path to the secret file either by edgerc or by txt"
-  end
-
   it "must warn if secret file does not exist" do
     AkamaiCCU::CLI.new(args: ["--cp=#{Stubs.cpcodes.join(",")}", "--secret=noent"], action: "invalidate", io: io).call
     Stubs.strip_log(io.string).must_equal "WARN -- : specified secret file does not exist"
@@ -22,7 +17,7 @@ describe AkamaiCCU::CLI do
     begin
       AkamaiCCU::CLI.new(args: %w[--help], action: "invalidate", io: io).call
     rescue SystemExit
-      io.string.must_equal "Usage: ccu_invalidate --secret=~/.edgerc --production --cp=12345,98765\n    -s, --secret=SECRET              Load secret data by file\n    -c, --cp=CP                      Specify contents by provider (CP) codes\n    -u, --url=URL                    Specify contents by URLs\n    -b, --bulk=BULK                  Specify bulk contents in a file\n        --headers=HEADERS            Specify HTTP headers to sign\n    -p, --production                 Purge on production network\n    -h, --help                       Prints this help\n"
+      io.string.must_equal "Usage: ccu_invalidate --secret=~/.edgerc --production --cp=12345,98765\n    -s, --secret=SECRET              Load secret by file (default to ~/.edgerc)\n    -c, --cp=CP                      Specify contents by provider (CP) codes\n    -u, --url=URL                    Specify contents by URLs\n    -b, --bulk=BULK                  Specify bulk contents in a file\n        --headers=HEADERS            Specify any HTTP headers to sign\n    -p, --production                 Purge on production network\n    -h, --help                       Prints this help\n"
     end
   end
 
