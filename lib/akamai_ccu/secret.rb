@@ -10,19 +10,15 @@ module AkamaiCCU
     class FileContentError < ArgumentError; end
 
     class << self
-      private def factory(opts, time)
-        new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", BODY_SIZE), time: time)
-      end
-
       def by_file(name = "~/.edgerc", time = Time.now)
         path = File.expand_path(name)
         return unless File.exist?(path)
-        data = File.readlines(path).reduce([]) do |acc, entry|
-          m = entry.match(ENTRY_REGEX)
-          acc << [m[1], m[2]] if m
+        opts = File.readlines(path).reduce({}) do |acc, entry|
+          _, k, v = Array(entry.match(ENTRY_REGEX))
+          acc[k] = v if k && v
           acc
         end
-        factory(Hash[data], time)
+        new(client_secret: opts.fetch("client_secret"), host: opts.fetch("host"), access_token: opts.fetch("access_token"), client_token: opts.fetch("client_token"), max_body: opts.fetch("max-body", BODY_SIZE), time: time)
       rescue KeyError => e
         raise FileContentError, "bad file content, #{e.message}", e.backtrace
       end
