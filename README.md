@@ -152,11 +152,11 @@ Calling the help for the specific action:
 ```shell
 ccu_invalidate -h
 Usage: ccu_invalidate --secret=~/.edgerc --production --cp=12345,98765
-    -s, --secret=SECRET              Load secret data by file
+    -s, --secret=SECRET              Load secret by file (default to ~/.edgerc)
     -c, --cp=CP                      Specify contents by provider (CP) codes
     -u, --url=URL                    Specify contents by URLs
     -b, --bulk=BULK                  Specify bulk contents in a file
-        --headers=HEADERS            Specify HTTP headers to sign
+        --headers=HEADERS            Specify any HTTP headers to sign
     -p, --production                 Purge on production network
     -h, --help                       Prints this help
 ```
