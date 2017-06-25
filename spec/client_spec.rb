@@ -10,7 +10,7 @@ describe AkamaiCCU::Client do
   end
 
   it "must execute request method on GET" do
-    res = client.call(path: "ccu/v3/diagnosis", method: AkamaiCCU::GET, initheader: nil)
+    res = client.call(path: "ccu/v3/diagnosis", method: AkamaiCCU::Client::GET, initheader: nil)
     res.body.must_equal "method=Stubs::HTTP::Get;uri=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/ccu/v3/diagnosis;initheader=nil"
   end
 

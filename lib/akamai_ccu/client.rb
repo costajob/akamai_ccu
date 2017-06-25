@@ -3,6 +3,11 @@ require "openssl"
 
 module AkamaiCCU
   class Client
+    GET = :Get
+    POST = :Post
+    SSL = "https"
+    JSON_HEADER = { "Content-Type" => "application/json" }
+
     attr_reader :net_klass, :host
 
     def initialize(host:, net_klass: Net::HTTP)

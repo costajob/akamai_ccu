@@ -49,7 +49,7 @@ module AkamaiCCU
 
     private def parser
       OptionParser.new do |opts|
-        opts.banner = "Usage: ccu_#{@action} --secret=~/.edgerc --production --cp=12345,98765"
+        opts.banner = "Usage: ccu_#{@action} --secret=~/tokens.txt --production --cp=12345,98765"
 
         opts.on("-sSECRET", "--secret=SECRET", "Load secret by file (default to ~/.edgerc)") do |secret|
           @secret = File.expand_path(secret)

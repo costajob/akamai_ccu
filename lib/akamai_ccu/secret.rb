@@ -1,5 +1,7 @@
-require "uri"
+require "base64"
+require "openssl"
 require "securerandom"
+require "uri"
 
 module AkamaiCCU
   class Secret
@@ -8,6 +10,20 @@ module AkamaiCCU
     BODY_SIZE = 131072
 
     class FileContentError < ArgumentError; end
+
+    def self.format_utc(time)
+      time.utc.strftime("%Y%m%dT%H:%M:%S+0000")
+    end
+
+    def self.sign(data)
+      digest = OpenSSL::Digest::SHA256.new.digest(data)
+      Base64.encode64(digest).strip
+    end
+
+    def self.sign_HMAC(key, data)
+      digest = OpenSSL::HMAC.digest(OpenSSL::Digest::SHA256.new, key, data)
+      Base64.encode64(digest).strip
+    end
 
     def self.by_file(name = "~/.edgerc", time = Time.now)
       path = File.expand_path(name)
@@ -32,17 +48,17 @@ module AkamaiCCU
       @client_token = client_token
       @max_body = max_body.to_i
       @nonce = nonce
-      @timestamp = AkamaiCCU.format_utc(time) 
+      @timestamp = self.class.format_utc(time) 
     end
 
     def touch
       @nonce = SecureRandom.uuid
-      @timestamp = AkamaiCCU.format_utc(Time.now)
+      @timestamp = self.class.format_utc(Time.now)
       self
     end
 
     def signed_key
-      AkamaiCCU.sign_HMAC(key: @client_secret, data: @timestamp)
+      self.class.sign_HMAC(@client_secret, @timestamp)
     end
 
     def auth_header

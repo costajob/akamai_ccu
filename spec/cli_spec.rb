@@ -17,7 +17,7 @@ describe AkamaiCCU::CLI do
     begin
       AkamaiCCU::CLI.new(args: %w[--help], action: "invalidate", io: io).call
     rescue SystemExit
-      io.string.must_equal "Usage: ccu_invalidate --secret=~/.edgerc --production --cp=12345,98765\n    -s, --secret=SECRET              Load secret by file (default to ~/.edgerc)\n    -c, --cp=CP                      Specify contents by provider (CP) codes\n    -u, --url=URL                    Specify contents by URLs\n    -b, --bulk=BULK                  Specify bulk contents in a file\n        --headers=HEADERS            Specify any HTTP headers to sign\n    -p, --production                 Purge on production network\n    -h, --help                       Prints this help\n"
+      io.string.must_equal "Usage: ccu_invalidate --secret=~/tokens.txt --production --cp=12345,98765\n    -s, --secret=SECRET              Load secret by file (default to ~/.edgerc)\n    -c, --cp=CP                      Specify contents by provider (CP) codes\n    -u, --url=URL                    Specify contents by URLs\n    -b, --bulk=BULK                  Specify bulk contents in a file\n        --headers=HEADERS            Specify any HTTP headers to sign\n    -p, --production                 Purge on production network\n    -h, --help                       Prints this help\n"
     end
   end
 

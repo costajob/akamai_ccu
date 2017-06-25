@@ -1,3 +1,4 @@
+require "json"
 require "akamai_ccu/client"
 require "akamai_ccu/endpoint"
 require "akamai_ccu/signer"
@@ -45,7 +46,7 @@ module AkamaiCCU
         self.class.logger.debug { "request: uri=#{request.path}; body=#{request.body}; authorization=#{request["Authorization"]}" }
       end
       self.class.logger.debug { "response: inspect=#{response.inspect}; body=#{response.body}" }
-      response_klass.factory(response.body)
+      response_klass.new(response.body)
     end
   end
 end

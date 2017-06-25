@@ -18,7 +18,6 @@
     * [ccu_invalidate](#ccu_invalidate)
     * [ccu_delete](#ccu_delete)
     * [Bulk operation](#bulk-operation)
-    * [Redirecting output](#redirecting-output)
     * [Overwriting options](#overwriting-options)
   * [Logging](#logging)
     * [Library logger](#library-logger)
@@ -123,14 +122,14 @@ The CCU V3 APIs allow for invalidating contents by URLs or content provider (CP)
 AkamaiCCU::Wrapper.invalidate_by_url(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/index.html])
 
 # invalidating resources on production (mind the "!") by CP code
-AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345, 98765])
+AkamaiCCU::Wrapper.invalidate_by_cpcode!([12345,98765])
 ```
 
 #### Deleting
 You can delete contents by URLs or CP codes as well, just be aware of what you're doing:
 ```ruby
 # deleting resources on staging by CP codes
-AkamaiCCU::Wrapper.delete_by_cpcode([12345, 98765])
+AkamaiCCU::Wrapper.delete_by_cpcode([12345,98765])
 
 # deleting resources on production (mind the "!") by URLs
 AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js])
@@ -139,9 +138,9 @@ AkamaiCCU::Wrapper.delete_by_url!(%w[https://akaa-baseurl-xxx-xxx.luna.akamaiapi
 #### Response
 The Net::HTTP response is wrapped by an utility struct:
 ```ruby
-res = AkamaiCCU::Wrapper.invalidate_by_cpcode([12345, 98765])
+res = AkamaiCCU::Wrapper.invalidate_by_cpcode([12345,98765])
 puts res 
-# status=201; detail=Request accepted; purge_id=e535071c-26b2-11e7-94d7-276f2f54d938; support_id=17PY1492793544958045-219026624; copletion_at=20170620T11:19:16+0000
+# status=201; detail=Request accepted; support_id=17PY1498402073417329-261436608; purge_id=44ac266e-59b5-11e7-84ca-75d9dd540c3b; copletion_at=2017-06-20 12:19:16 +0100
 ```
 
 ### CLI
@@ -151,7 +150,7 @@ You can use the CLI by:
 Calling the help for the specific action:
 ```shell
 ccu_invalidate -h
-Usage: ccu_invalidate --secret=~/.edgerc --production --cp=12345,98765
+Usage: ccu_invalidate --secret=~/tokens.txt --production --cp=12345,98765
     -s, --secret=SECRET              Load secret by file (default to ~/.edgerc)
     -c, --cp=CP                      Specify contents by provider (CP) codes
     -u, --url=URL                    Specify contents by URLs
@@ -164,16 +163,15 @@ Usage: ccu_invalidate --secret=~/.edgerc --production --cp=12345,98765
 #### ccu_invalidate
 Do request for contents invalidation by:
 ```shell
-ccu_invalidate --secret=~/.edgerc \ 
+ccu_invalidate --secret=~/tokens.txt \ 
                --url=https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.css,https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/main.js \
                --production
 ```
 
 #### ccu_delete
-Do request for contents deletion by:
+Do request for contents deletion by (load secret from ~/.edgerc implicitly):
 ```shell
-ccu_delete --secret=~/tokens.txt \ 
-           --cp=12345,98765 \
+ccu_delete --cp=12345,98765 \
            --headers=Accept,Content-Length
 ```
 
@@ -190,13 +188,7 @@ https://akaa-baseurl-xxx-xxx.luna.akamaiapis.net/static/index.html
 
 Specify the bulk option by using the file path:
 ```shell
-ccu_invalidate --secret=~/.edgerc --bulk=urls.txt
-```
-
-#### Redirecting output
-In case you're calling the CLI from another program (like your Jenkins script), just redirect the output to your log file:
-```shell
-ccu_invalidate --secret=~/.edgerc --cp=12345,98765 >> mylog.log
+ccu_invalidate --bulk=urls.txt
 ```
 
 #### Overwriting options
@@ -233,7 +225,13 @@ AkamaiCCU::Wrapper.logger = Logger.new(STDOUT)
 CLI uses a logger writing to `STDOUT` by default with an `INFO` level.  
 In case you want to control the log level, just pass an environment variable to the script:
 ```shell
-LOG_LEVEL=DEBUG ccu_invalidate --secret=~/.edgerc --cp=12345,98765
+LOG_LEVEL=DEBUG ccu_invalidate --cp=12345,98765
+```
+
+##### Redirecting output
+In case you're calling the CLI from another program (like your Jenkins script), just redirect the output to your log file:
+```shell
+ccu_invalidate --cp=12345,98765 >> mylog.log
 ```
 
 ### Possible Issues
@@ -241,7 +239,7 @@ LOG_LEVEL=DEBUG ccu_invalidate --secret=~/.edgerc --cp=12345,98765
 #### Invalid timestamp
 You could get a `bad request` response like this:
 ```shell
-status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; method=POST; requested_at=2017-06-21T12:33:10Z
+status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; method=POST; requested_at=2017-06-20 12:19:16 +0100
 ```
 
 This happens since Akamai APIs only tolerate a clock skew of at most 30 seconds to defend against certain network attacks (described [here](https://community.akamai.com/docs/DOC-1336)).  

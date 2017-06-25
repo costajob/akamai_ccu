@@ -7,13 +7,21 @@ module Stubs
     def touch; Time.now; end
 
     def self.by_file(name); name; end
+
+    def self.format_utc(time)
+      AkamaiCCU::Secret.format_utc(time)
+    end
+
+    def self.sign(data)
+      AkamaiCCU::Secret.sign(data)
+    end
+
+    def self.sign_HMAC(key, data)
+      AkamaiCCU::Secret.sign_HMAC(key, data)
+    end
   end
 
   Response = Struct.new(:body) do
-    def self.factory(body)
-      new(body)
-    end
-
     def to_s
       body.reduce([]) do |acc, (k,v)|
         acc << "#{k}=#{v}"
@@ -168,11 +176,11 @@ module Stubs
   end
 
   def error_body
-    {"type"=>"https://problems.purge.akamaiapis.net/-/pep-authn/request-error", "title"=>"Bad request", "status"=>400, "detail"=>"Invalid timestamp", "instance"=>"https://#{host}/ccu/v3/invalidate/url/staging", "method"=>"POST", "serverIp"=>"88.221.205.237", "clientIp"=>"87.241.53.82", "requestId"=>"20e31be4", "requestTime"=>"2017-06-20T12:19:11Z"}
+    {"title"=>"unauthorized cpcode", "supportId"=>"17PY1498401498349113-269829312", "httpStatus"=>403, "detail"=>"12345", "describedBy"=>"https://api.ccu.akamai.com/ccu/v2/errors/unauthorized-cpcode"}
   end
 
   def ack_body
-    {"purgeId"=>"e535071c-26b2-11e7-94d7-276f2f54d938", "estimatedSeconds"=>5, "httpStatus"=>201, "detail"=>"Request accepted", "supportId"=>"17PY1492793544958045-219026624"}
+    {"estimatedSeconds"=>5, "purgeId"=>"44ac266e-59b5-11e7-84ca-75d9dd540c3b", "supportId"=>"17PY1498402073417329-261436608", "httpStatus"=>201, "detail"=>"Request accepted"}
   end
   
   def txt_path

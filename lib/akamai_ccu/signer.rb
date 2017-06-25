@@ -1,5 +1,4 @@
 require "forwardable"
-require "uri"
 require "akamai_ccu/secret"
 
 module AkamaiCCU
@@ -42,7 +41,7 @@ module AkamaiCCU
     private def signed_body
       return "" unless body?
       truncated = body[0...max_body]
-      AkamaiCCU.sign(truncated)
+      @secret.class.sign(truncated)
     end
 
     private def signature_data
@@ -58,7 +57,7 @@ module AkamaiCCU
     end
 
     private def signature
-      AkamaiCCU.sign_HMAC(key: signed_key, data: signature_data.join(TAB))
+      @secret.class.sign_HMAC(signed_key, signature_data.join(TAB))
     end
 
     def signed_header
