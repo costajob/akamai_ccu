@@ -11,9 +11,9 @@ module AkamaiCCU
       @title = @body["title"]
       @status = @body.fetch("httpStatus") { @body.fetch("status", BAD_STATUS) }
       @detail = @body["detail"]
-      @support_id = @body["supportId"]
+      @support_id = @body.fetch("supportId") { @body["requestId"] }
       @purge_id = @body["purgeId"]
-      @described_by = @body["describedBy"]
+      @described_by = @body.fetch("describedBy") { @body["type"] }
       @estimated_secs = @body["estimatedSeconds"]
       @completion_at = time + @estimated_secs.to_i if @estimated_secs
     end

@@ -239,7 +239,7 @@ ccu_invalidate --cp=12345,98765 >> mylog.log
 #### Invalid timestamp
 You could get a `bad request` response like this:
 ```shell
-status=400; title=Bad request; detail=Invalid timestamp; request_id=2ce206fd; method=POST; requested_at=2017-06-20 12:19:16 +0100
+status=400; title=Bad request; detail=Invalid timestamp; support_id=5079982a; described_by=https://problems.purge.akamaiapis.net/-/pep-authn/request-error
 ```
 
 This happens since Akamai APIs only tolerate a clock skew of at most 30 seconds to defend against certain network attacks (described [here](https://community.akamai.com/docs/DOC-1336)).  
