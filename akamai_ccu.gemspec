@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.executables = %w[ccu_invalidate ccu_delete]
   s.require_paths = ["lib"]
   s.license = "MIT"
-  s.required_ruby_version = ">= 2.2.2"
+  s.required_ruby_version = ">= 2.1.2"
 
   s.add_development_dependency "bundler", "~> 1.15"
   s.add_development_dependency "rake", "~> 10.0"
