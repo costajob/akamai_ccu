@@ -26,6 +26,6 @@ describe AkamaiCCU::Response do
 
   it "must return a bening hash for parsing errors" do
     benign = AkamaiCCU::Response.new("{[]}")
-    benign.to_s.must_equal "status=400; detail=743: unexpected token at '{[]}'"
+    benign.to_s.must_match(/status=400; detail=\d{3}: unexpected token at '\{\[\]\}'/)
   end
 end
