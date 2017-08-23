@@ -21,16 +21,9 @@ module Stubs
     end
   end
 
-  class Response
-    attr_reader :body
-
-    def initialize(body:, logger: nil)
-      @body = body
-      @logger = logger
-    end
-
+  Response = Struct.new(:body) do
     def to_s
-      @body.reduce([]) do |acc, (k,v)|
+      body.reduce([]) do |acc, (k,v)|
         acc << "#{k}=#{v}"
       end.join(";")
     end
@@ -97,7 +90,7 @@ module Stubs
     end
 
     def request(payload)
-      Response.new(body: payload.inspect) 
+      Response.new(payload.inspect)
     end
 
     class Get
@@ -129,7 +122,7 @@ module Stubs
     def call(path:)
       request = Stubs.post
       yield(request)
-      Response.new(body: { uri: URI.join(@host, path), request: request })
+      Response.new(uri: URI.join(@host, path), request: request)
     end
   end
 
@@ -189,7 +182,7 @@ module Stubs
   def ack_body
     {"estimatedSeconds"=>5, "purgeId"=>"44ac266e-59b5-11e7-84ca-75d9dd540c3b", "supportId"=>"17PY1498402073417329-261436608", "httpStatus"=>201, "detail"=>"Request accepted"}
   end
-  
+
   def txt_path
     File.expand_path("../tokens.txt", __FILE__)
   end

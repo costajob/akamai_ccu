@@ -46,7 +46,7 @@ module AkamaiCCU
         self.class.logger.debug { "request: uri=#{request.path}; body=#{request.body}; authorization=#{request["Authorization"]}" }
       end
       self.class.logger.info { "response: inspect=#{response.inspect}; body=#{response.body}" }
-      response_klass.new(body: response.body, logger: self.class.logger)
+      response_klass.new(response.body)
     end
   end
 end
