@@ -21,9 +21,16 @@ module Stubs
     end
   end
 
-  Response = Struct.new(:body) do
+  class Response
+    attr_reader :body
+
+    def initialize(body:, logger: nil)
+      @body = body
+      @logger = logger
+    end
+
     def to_s
-      body.reduce([]) do |acc, (k,v)|
+      @body.reduce([]) do |acc, (k,v)|
         acc << "#{k}=#{v}"
       end.join(";")
     end
@@ -90,7 +97,7 @@ module Stubs
     end
 
     def request(payload)
-      Response.new(payload.inspect) 
+      Response.new(body: payload.inspect) 
     end
 
     class Get
@@ -122,7 +129,7 @@ module Stubs
     def call(path:)
       request = Stubs.post
       yield(request)
-      Response.new(uri: URI.join(@host, path), request: request)
+      Response.new(body: { uri: URI.join(@host, path), request: request })
     end
   end
 

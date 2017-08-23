@@ -1,3 +1,4 @@
+require "logger"
 require "time"
 
 module AkamaiCCU
@@ -6,7 +7,8 @@ module AkamaiCCU
 
     attr_reader :body, :title, :status, :detail, :support_id, :purge_id, :decribed_by, :completion_at
 
-    def initialize(body = {}, time = Time.now)
+    def initialize(body: {}, time: Time.now, logger: Logger.new(nil))
+      @logger = logger
       @body = parse(body)
       @title = @body["title"]
       @status = @body.fetch("httpStatus") { @body.fetch("status", BAD_STATUS) }
@@ -36,6 +38,8 @@ module AkamaiCCU
     private def parse(body)
       return body if body.is_a? Hash
       JSON.parse(body)
+    rescue JSON::ParserError => e
+      @logger.error { "reponse parse error: #{e.message}" }
     end
   end
 end
